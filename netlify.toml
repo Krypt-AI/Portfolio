@@ -1,0 +1,35 @@
+# Netlify hosting (README: Deploying). The site is static: Astro writes it to dist/, so it needs no
+# adapter and no functions. When this folder sits inside a larger repository, as in Website Portfolio,
+# set the Netlify base directory to Portfolio so this file is found.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 7 needs Node 22.12 or newer; 24 matches local development.
+  NODE_VERSION = "24"
+
+# Production stops while any TBD placeholder is left (src/data/readiness.ts), so a page reading
+# "Your Name" can't go live. Deploy previews and branch deploys build the draft instead, banner
+# included, so unfinished work can still be checked at a real address.
+[context.deploy-preview]
+  command = "npm run build:draft"
+
+[context.branch-deploy]
+  command = "npm run build:draft"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Built CSS, JavaScript, fonts and images have content hashes in their names.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

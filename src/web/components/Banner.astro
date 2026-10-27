@@ -1,0 +1,355 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '../../components/Icon.astro';
+import Value from '../../components/Value.astro';
+import { photo, photoHint } from '../../data/photo';
+import { profile } from '../../data/profile';
+import { projects } from '../../data/projects';
+import { resolve } from '../../lib/placeholder';
+
+/**
+ * The exhibitor banner across the top of the wall: the presenter's badge (photo, name,
+ * programme), their availability and the two actions a recruiter came for. Below it, the
+ * section links stay pinned while the wall scrolls.
+ */
+const email = resolve(profile.contact.email);
+const name = resolve(profile.name);
+const cvHref = profile.contact.cv ?? '/cv';
+
+const links = [
+  ...projects.map((project) => ({ href: `#${project.id}`, label: project.name, band: `var(--band-${project.id})` })),
+  // The presenter's posters band in ink, which would vanish on the ink nav; their swatch is the sheet.
+  { href: '#about', label: 'About me', band: 'var(--sheet)' },
+  { href: '#skills', label: 'Skills', band: 'var(--sheet)' },
+  { href: '#certificates', label: 'Certificates', band: 'var(--sheet)' },
+  { href: '#contact', label: 'Contact', band: 'var(--action)' },
+];
+---
+
+<header class="banner" id="top">
+  <div class="banner__inner wall">
+    <div class="badge">
+      {
+        photo ? (
+          <Picture
+            src={photo}
+            formats={['avif', 'webp']}
+            widths={[96, 192, 288]}
+            sizes="6rem"
+            alt={`${name}`}
+            class="badge__photo"
+            loading="eager"
+          />
+        ) : (
+          <span class="badge__photo badge__photo--empty tbd" title={`TBD: ${photoHint}`}>
+            <span>Photo</span>
+          </span>
+        )
+      }
+      <div class="badge__text">
+        <h1 class="badge__name"><Value field={profile.name} /></h1>
+        <p class="badge__programme">
+          {profile.programme}, <Value field={profile.institution} />. Graduating <Value field={profile.expectedGraduation} />.
+        </p>
+      </div>
+    </div>
+
+    <div class="banner__side">
+      <p class="banner__status">
+        <span class="banner__dot" aria-hidden="true"></span>
+        <span>Available for industrial training from <Value field={profile.availability.internshipFrom} /></span>
+      </p>
+      <div class="banner__actions">
+        <a class="button button--action" href={`mailto:${email}`}>
+          <Icon name="mail" />
+          Email me
+        </a>
+        <a class="button" href={cvHref} {...(profile.contact.cv ? { download: '' } : {})}>
+          <Icon name="download" />
+          CV
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="wall-nav" aria-label="On this wall">
+  <div class="wall-nav__inner wall">
+    <ol class="wall-nav__list">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} data-wall-link style={`--swatch: ${link.band}`}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<script>
+  // Mark the poster in view, so the links double as "you are here" on the wall.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('[data-wall-link]')].map((link) => [link.hash.slice(1), link]),
+  );
+  const targets = [...links.keys()].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+  const scroller = document.querySelector<HTMLElement>('.wall-nav__inner');
+  const smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  const visible = new Set<string>();
+  let shown: string | undefined;
+
+  // A leading fade appears once the links have scrolled, so hidden ones read as hidden.
+  const markScrolled = () => scroller?.classList.toggle('is-scrolled', scroller.scrollLeft > 4);
+  scroller?.addEventListener('scroll', markScrolled, { passive: true });
+
+  // On phones the links scroll sideways; bring the current one into view as the wall scrolls.
+  const reveal = (link: HTMLElement) => {
+    if (!scroller || scroller.scrollWidth <= scroller.clientWidth) return;
+    const box = scroller.getBoundingClientRect();
+    const { left, right } = link.getBoundingClientRect();
+    if (left < box.left || right > box.right - 48) {
+      scroller.scrollBy({ left: left - box.left - 16, behavior: smooth ? 'smooth' : 'auto' });
+    }
+  };
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) visible.add(entry.target.id);
+        else visible.delete(entry.target.id);
+      }
+      const current = targets.find((el) => visible.has(el.id))?.id;
+      for (const [id, link] of links) {
+        if (id === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+      if (current !== shown) {
+        shown = current;
+        const link = current ? links.get(current) : undefined;
+        // Above the wall nothing is current: show the links from the start again.
+        if (link) reveal(link);
+        else scroller?.scrollTo({ left: 0, behavior: smooth ? 'smooth' : 'auto' });
+      }
+    },
+    { rootMargin: '-20% 0px -60% 0px' },
+  );
+  for (const target of targets) observer.observe(target);
+</script>
+
+<style>
+  .banner {
+    background: var(--banner);
+    color: var(--on-banner);
+  }
+
+  .banner__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-7);
+    padding-block: var(--space-5);
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .badge__photo {
+    flex: none;
+    width: 6rem;
+    height: 6rem;
+    border: 3px solid var(--sheet);
+    border-radius: var(--radius);
+    object-fit: cover;
+    background: var(--banner-raised);
+  }
+
+  .badge__photo--empty {
+    display: grid;
+    place-items: center;
+    border-style: dashed;
+    border-color: var(--on-banner-muted);
+    color: var(--on-banner-muted);
+    font-size: var(--step--1);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .badge__name {
+    font-family: var(--font-display);
+    font-size: var(--step-name);
+    font-weight: 800;
+    letter-spacing: 0.005em;
+    line-height: 0.95;
+  }
+
+  .badge__programme {
+    margin-top: var(--space-2);
+    max-width: 44ch;
+    color: var(--on-banner-muted);
+  }
+
+  .banner__side {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+  }
+
+  .banner__status {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-weight: 700;
+  }
+
+  .banner__status :global(.tbd) {
+    text-decoration-color: var(--pin-on-dark);
+  }
+
+  /* Status ships with its words; the dot only repeats them. */
+  .banner__dot {
+    flex: none;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--status-live);
+    translate: 0 -0.05em;
+  }
+
+  .banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .banner :focus-visible {
+    outline-color: var(--sheet);
+  }
+
+  /* ---- Section links: pinned while the wall scrolls ---- */
+
+  .wall-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--banner);
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    box-shadow: 0 6px 16px -10px rgb(17 20 24 / 0.6);
+  }
+
+  .wall-nav__inner {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .wall-nav__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .wall-nav__list {
+    display: flex;
+    gap: var(--space-1);
+    min-height: var(--nav-height);
+    padding: 0;
+    list-style: none;
+  }
+
+  .wall-nav__list a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    height: 100%;
+    padding: 0 var(--space-3);
+    color: var(--on-banner-muted);
+    font-size: var(--step--1);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .wall-nav__list li:first-child a {
+    padding-left: 0;
+  }
+
+  /* Each link carries its poster's band colour, the way a floor plan keys its stands. */
+  .wall-nav__list a::before {
+    content: '';
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid var(--on-banner-muted);
+    background: transparent;
+    transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+  }
+
+  .wall-nav__list a:hover,
+  .wall-nav__list a[aria-current] {
+    color: var(--on-banner);
+  }
+
+  .wall-nav__list a:hover::before,
+  .wall-nav__list a[aria-current]::before {
+    border-color: var(--on-banner);
+    background: var(--swatch);
+  }
+
+  .wall-nav__list a[aria-current]::after {
+    content: '';
+    position: absolute;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: 0;
+    height: 3px;
+    background: var(--on-banner);
+  }
+
+  .wall-nav__list li:first-child a[aria-current]::after {
+    left: 0;
+  }
+
+  .wall-nav :focus-visible {
+    outline-color: var(--sheet);
+    outline-offset: -3px;
+  }
+
+  /* Phones: a fade on the trailing edge says more links wait off-screen. */
+  @media (max-width: 46rem) {
+    .wall-nav__inner {
+      mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+    }
+
+    .wall-nav__inner.is-scrolled {
+      mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    }
+
+    .wall-nav__list {
+      padding-right: 3rem;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .badge {
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .badge__photo {
+      width: 4.5rem;
+      height: 4.5rem;
+    }
+
+    .banner__actions {
+      width: 100%;
+    }
+
+    .banner__actions .button {
+      flex: 1;
+    }
+  }
+</style>

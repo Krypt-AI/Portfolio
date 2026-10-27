@@ -1,0 +1,71 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "ai-color-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-26T23:40:02.667Z",
+        "reason": "Claude: decision-round sketch of the unchosen Project Logbook direction (violet office-stamp ink); kept as the spent hand, never shipped"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned-r1.html"
+        ],
+        "createdAt": "2026-10-26T23:40:02.806Z",
+        "reason": "Claude: decision-round sketch of the unchosen Challenge Board direction; kept as the spent hand, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-10-27T00:03:58.025Z",
+        "reason": "Claude: decision-round first-viewport sketch drawn in system fonts as a skeleton; kept as the round's record, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-10-27T00:03:58.186Z",
+        "reason": "Claude: decision-round first-viewport sketch drawn in system fonts as a skeleton; kept as the round's record, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-10-27T00:03:58.336Z",
+        "reason": "Claude: decision-round first-viewport sketch drawn in system fonts as a skeleton; kept as the round's record, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          ".impeccable/mocks/decision/assigned-r1.html"
+        ],
+        "createdAt": "2026-10-27T00:03:58.505Z",
+        "reason": "Claude: decision-round first-viewport sketch drawn in system fonts as a skeleton; kept as the round's record, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          ".impeccable/mocks/decision/model-pick-r1.html"
+        ],
+        "createdAt": "2026-10-27T00:03:58.650Z",
+        "reason": "Claude: decision-round first-viewport sketch drawn in system fonts as a skeleton; kept as the round's record, never shipped"
+      }
+    ]
+  }
+}

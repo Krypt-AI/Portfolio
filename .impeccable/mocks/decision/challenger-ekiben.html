@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ekiben sketch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1440px; height: 900px; overflow: hidden; background: #c9a878; font-family: Georgia, serif; color: #1d1a16; position: relative; }
+  header { position: absolute; left: 70px; top: 44px; right: 70px; display: flex; justify-content: space-between; align-items: end; }
+  header b { font-size: 54px; }
+  header span { font-size: 24px; }
+  .shelf { position: absolute; left: 70px; right: 70px; top: 190px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 36px; }
+  .box { background: #f3ead8; border: 3px solid #1d1a16; height: 560px; position: relative; padding: 26px; }
+  .box h3 { font-size: 44px; }
+  .box p { font-size: 22px; margin-top: 8px; }
+  .map { position: absolute; left: 26px; right: 26px; bottom: 26px; height: 260px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+  .map div { border: 2px solid #1d1a16; display: grid; place-items: center; font-size: 26px; font-weight: 700; }
+  .band { position: absolute; top: 0; bottom: 0; right: 70px; width: 46px; background: #1f4e79; }
+  .box:nth-child(2) .band { background: #2e6b3a; } .box:nth-child(3) .band { background: #d9452b; }
+  .seal { position: absolute; top: 24px; right: 140px; width: 70px; height: 70px; border-radius: 50%; background: #d9452b; }
+</style>
+</head>
+<body>
+  <header><b>Muhammad Alif Hakimi</b><span>Email · CV</span></header>
+  <div class="shelf">
+    <div class="box"><div class="band"></div><div class="seal"></div><h3>Specify</h3><p>AI email and recruitment assistant</p>
+      <div class="map"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div></div></div>
+    <div class="box"><div class="band"></div><h3>Study Hub</h3><p>Learning platform</p>
+      <div class="map"><div>1</div><div>2</div><div>3</div><div>4</div></div></div>
+    <div class="box"><div class="band"></div><h3>RWBY</h3><p>Realtime community</p>
+      <div class="map"><div>1</div><div>2</div><div>3</div><div>4</div></div></div>
+  </div>
+</body>
+</html>

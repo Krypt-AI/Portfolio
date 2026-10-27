@@ -1,0 +1,55 @@
+---
+import DraftNotice from '../components/DraftNotice.astro';
+import CvLayout from '../cv/CvLayout.astro';
+import PageBreak from '../cv/components/PageBreak.astro';
+import ProductFolderBar from '../cv/components/ProductFolderBar.astro';
+import { doc } from '../cv/data/document';
+import Certifications from '../cv/sections/Certifications.astro';
+import ImportantNotice from '../cv/sections/ImportantNotice.astro';
+import OrderingInformation from '../cv/sections/OrderingInformation.astro';
+import PageOne from '../cv/sections/PageOne.astro';
+import PinConfiguration from '../cv/sections/PinConfiguration.astro';
+import RevisionHistory from '../cv/sections/RevisionHistory.astro';
+import Specifications from '../cv/sections/Specifications.astro';
+import TypicalApplication from '../cv/sections/TypicalApplication.astro';
+import { profile } from '../data/profile';
+import { assertReadyToShip } from '../data/readiness';
+import { resolve } from '../lib/placeholder';
+
+/** The printed CV: the owner set as a component datasheet, built to save as an A4 PDF. */
+assertReadyToShip();
+
+const name = resolve(profile.name);
+const title = `${name}, CV · ${doc.partNumber} datasheet`;
+const description = `${name}: ${profile.headline}. Skills proven in public code, a full case study of Specify, certifications and contact details, set to print on A4.`;
+---
+
+<CvLayout title={title} description={description}>
+  <ProductFolderBar />
+  <DraftNotice />
+  <main id="main">
+    <PageOne />
+    <PageBreak after={1} />
+    <PinConfiguration />
+    <PageBreak after={2} />
+    <Specifications />
+    <PageBreak after={3} />
+    <TypicalApplication firstPage={4} />
+    <PageBreak after={7} />
+    <div class="page sheet closing">
+      <Certifications />
+      <RevisionHistory />
+    </div>
+    <PageBreak after={8} />
+    <OrderingInformation />
+  </main>
+  <ImportantNotice />
+</CvLayout>
+
+<style>
+  .closing {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+</style>

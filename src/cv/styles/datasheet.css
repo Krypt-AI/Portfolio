@@ -1,0 +1,426 @@
+/*
+ * Datasheet primitives shared by every section: the sheet, numbered headings, ruled
+ * tables, figures and captions, footnotes, flags and buttons.
+ */
+
+.sheet {
+  width: 100%;
+  max-width: calc(var(--sheet-width) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* One datasheet page: the run of content between two page breaks. */
+.page {
+  padding-block: var(--space-7) var(--space-8);
+}
+
+/* ---- Numbered headings ------------------------------------------------- */
+
+.heading {
+  display: flex;
+  gap: 0.55em;
+  align-items: baseline;
+  font-weight: 700;
+  scroll-margin-top: calc(var(--bar-height) + var(--space-5));
+}
+
+.heading__num {
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+
+.heading--2 {
+  font-size: var(--step-2);
+  letter-spacing: -0.012em;
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--ink);
+  margin-bottom: var(--space-5);
+}
+
+.heading--3 {
+  font-size: var(--step-1);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+
+.heading--4 {
+  font-size: var(--step-0);
+  margin-top: var(--space-7);
+  margin-bottom: var(--space-3);
+}
+
+.page > .heading:first-child {
+  margin-top: 0;
+}
+
+.heading--3 + .heading--4 {
+  margin-top: var(--space-5);
+}
+
+/* ---- Running text ------------------------------------------------------ */
+
+.prose {
+  max-width: var(--measure);
+  color: var(--ink);
+}
+
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+
+.prose--secondary {
+  color: var(--ink-2);
+}
+
+.bullets {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bullets > li {
+  position: relative;
+  padding-left: 1.25em;
+}
+
+.bullets > li::before {
+  content: '';
+  position: absolute;
+  left: 0.15em;
+  top: 0.62em;
+  width: 0.42em;
+  height: 0.42em;
+  background: var(--ink);
+}
+
+code,
+.code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.05em 0.3em;
+  background: var(--paper-sunk);
+  border-radius: 2px;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Tables ------------------------------------------------------------ */
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.dt caption,
+.caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: var(--space-3);
+  font-size: var(--step--1);
+  color: var(--ink);
+}
+
+.caption__label {
+  font-weight: 700;
+  margin-right: 0.35em;
+}
+
+.dt thead th {
+  background: var(--paper-sunk);
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--step--2);
+  font-stretch: var(--stretch-condensed);
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  vertical-align: bottom;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.dt td,
+.dt tbody th {
+  padding: var(--space-3);
+  border-bottom: var(--line);
+  vertical-align: top;
+  text-align: left;
+}
+
+.dt tbody th {
+  font-weight: 600;
+}
+
+.dt tbody tr:last-child > * {
+  border-bottom: 2px solid var(--ink);
+}
+
+.dt .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dt .value {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+/* Key and value tables: the parameter is a row header. */
+.dt--kv tbody th {
+  width: 38%;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.dt--kv tbody tr:first-child > * {
+  border-top: 2px solid var(--ink);
+}
+
+/*
+ * Phones: wide tables restack into one block per row, so no measured value hides
+ * behind sideways scroll. Each cell's column name comes from its data-label.
+ */
+@media (max-width: 40rem) {
+  .dt--stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .dt--stack,
+  .dt--stack tbody,
+  .dt--stack caption {
+    display: block;
+  }
+
+  .dt--stack tbody {
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .dt--stack tr {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+  }
+
+  .dt--stack tr + tr {
+    border-top: var(--line);
+  }
+
+  .dt.dt--stack tbody tr > * {
+    display: block;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .dt.dt--stack tbody th[scope='row'] {
+    order: -1;
+    font-weight: 700;
+  }
+
+  .dt.dt--stack td[data-label] {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .dt--stack td[data-label]::before {
+    content: attr(data-label);
+    padding-top: 0.15em;
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    font-stretch: var(--stretch-condensed);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .dt--stack .flag {
+    justify-self: start;
+  }
+
+  /* A unit column folds into its value. */
+  .dt.dt--stack td[data-stack-hide] {
+    display: none;
+  }
+
+  .dt--stack [data-unit]::after {
+    content: ' ' attr(data-unit);
+    font-family: var(--font-sans);
+    color: var(--ink-2);
+  }
+}
+
+.footnotes {
+  margin-top: var(--space-3);
+  padding: 0;
+  list-style: none;
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.footnotes li + li {
+  margin-top: var(--space-1);
+}
+
+.fn {
+  font-size: 0.8em;
+  line-height: 0;
+  margin-left: 0.1em;
+  color: var(--ink-2);
+}
+
+/* ---- Figures ----------------------------------------------------------- */
+
+.figure {
+  margin: 0;
+  scroll-margin-top: calc(var(--bar-height) + var(--space-5));
+}
+
+.figure__caption {
+  margin-top: var(--space-3);
+  font-size: var(--step--1);
+  color: var(--ink);
+  max-width: var(--measure);
+}
+
+.figure__caption .caption__label {
+  font-weight: 700;
+}
+
+.figure__note {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--ink-3);
+}
+
+.shot {
+  border: 1px solid var(--ink);
+  background: var(--screen);
+}
+
+/* ---- Flags ------------------------------------------------------------- */
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.18em 0.5em;
+  border: 1.5px solid currentColor;
+  font-size: var(--step--2);
+  font-stretch: var(--stretch-condensed);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.flag--active {
+  color: var(--ink);
+}
+
+.flag--active::before {
+  content: '';
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--status-active);
+}
+
+.flag--preview {
+  color: var(--ink-2);
+  border-style: dashed;
+}
+
+.flag--tbd {
+  color: var(--red);
+}
+
+/* ---- Buttons ----------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border: 1.5px solid var(--red);
+  border-radius: 2px;
+  background: var(--red);
+  color: #fff;
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+
+.button:hover {
+  background: var(--red-deep);
+  border-color: var(--red-deep);
+  color: #fff;
+}
+
+.button--quiet {
+  background: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.button--quiet:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.button svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+
+/* External links set as a row of references. */
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+.link-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.link-row svg {
+  width: 1em;
+  height: 1em;
+}

@@ -1,0 +1,116 @@
+---
+import type { FigureStep } from '../../data/projects';
+
+/**
+ * A process drawn as numbered stations on one line, read top to bottom. A step the person
+ * owns fills with the band colour; a step that stops the flow ends the line.
+ */
+interface Props {
+  title: string;
+  steps: FigureStep[];
+  caption: string;
+}
+
+const { title, steps, caption } = Astro.props;
+---
+
+<figure class="steps-figure">
+  <ol class="steps">
+    {
+      steps.map((step, index) => (
+        <li class:list={['step', step.tone && `step--${step.tone}`]}>
+          <span class="step__num" aria-hidden="true">
+            {index + 1}
+          </span>
+          <div class="step__body">
+            <strong class="step__title">{step.title}</strong>
+            <span class="step__text">{step.text}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption class="steps-figure__caption"><strong>{title}.</strong> {caption}</figcaption>
+</figure>
+
+<style>
+  .steps {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+  }
+
+  /* The line that joins one station to the next. */
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: calc(1.125rem - 1.5px);
+    top: 2.25rem;
+    bottom: 0;
+    width: 3px;
+    background: var(--band);
+  }
+
+  .step__num {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 3px solid var(--band);
+    border-radius: 50%;
+    background: var(--sheet);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .step__body {
+    display: grid;
+    gap: 0.1rem;
+    padding-top: 0.2rem;
+  }
+
+  .step__title {
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+
+  .step__text {
+    color: var(--ink-2);
+  }
+
+  .step--person .step__num {
+    background: var(--band);
+    color: var(--sheet);
+  }
+
+  .step--person .step__title {
+    color: var(--band);
+  }
+
+  .step--stop .step__num {
+    border-color: var(--action);
+    background: var(--action);
+    color: var(--sheet);
+  }
+
+  .steps-figure__caption {
+    margin-top: var(--space-2);
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+
+  .steps-figure__caption strong {
+    color: var(--ink);
+  }
+</style>

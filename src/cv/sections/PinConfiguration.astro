@@ -1,0 +1,22 @@
+---
+import Pinout from '../components/Pinout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { sections } from '../data/document';
+
+/** Section 4: skills as pins, each one proven in a file you can open. */
+---
+
+<section class="page sheet" aria-labelledby={sections.pins.id}>
+  <SectionHeading section={sections.pins} />
+  <p class="prose intro">
+    Each pin is a skill, proven in a public file you can open in one of three repositories. Point at a pin, or tab
+    to it, to find its row.
+  </p>
+  <Pinout />
+</section>
+
+<style>
+  .intro {
+    margin-bottom: var(--space-7);
+  }
+</style>

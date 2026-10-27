@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Challenge board sketch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1440px; height: 900px; overflow: hidden; background: #f7f9fc; font-family: "Segoe UI", Arial, sans-serif; color: #101828; }
+  header { display: grid; grid-template-columns: 1fr auto; align-items: end; padding: 48px 80px 28px; border-bottom: 4px solid #101828; }
+  header small { display: block; font-size: 22px; font-weight: 700; letter-spacing: 0.12em; }
+  header h1 { font-size: 76px; line-height: 1; font-weight: 900; letter-spacing: -0.02em; margin-top: 8px; }
+  header p { font-size: 26px; margin-top: 12px; }
+  .actions { display: flex; gap: 14px; }
+  .actions div { height: 60px; padding: 0 30px; display: grid; place-items: center; font-size: 24px; font-weight: 800; border: 3px solid #101828; }
+  .actions div:first-child { background: #101828; color: #fff; }
+  .board { padding: 24px 80px; display: grid; gap: 14px; }
+  .row { display: grid; grid-template-columns: 230px 1fr; align-items: center; min-height: 92px; border-bottom: 2px solid #d0d5dd; }
+  .cat { height: 64px; display: flex; align-items: center; padding-left: 20px; font-size: 24px; font-weight: 800; color: #fff; }
+  .row:nth-child(1) .cat { background: #ff5a1f; } .row:nth-child(2) .cat { background: #2445ff; } .row:nth-child(3) .cat { background: #00a676; } .row:nth-child(4) .cat { background: #e0115f; } .row:nth-child(5) .cat { background: #6b4eff; }
+  .solves { display: flex; gap: 48px; padding-left: 32px; font-size: 26px; font-weight: 700; }
+  .solves span::before { content: "⚑ "; }
+  .flag { font-family: Consolas, monospace; font-size: 22px; color: #2445ff; }
+</style>
+</head>
+<body>
+  <header>
+    <div><small>TEAM · DIPLOMA IN COMPUTER SCIENCE, UNITEN</small><h1>Muhammad Alif Hakimi</h1><p>3 projects solved · open for industrial training</p></div>
+    <div class="actions"><div>Email me</div><div>CV</div></div>
+  </header>
+  <div class="board">
+    <div class="row"><div class="cat">Frontend</div><div class="solves"><span>Workflow builder</span><span>Study playground</span><span>Lineup planner UI</span></div></div>
+    <div class="row"><div class="cat">Backend</div><div class="solves"><span>Gmail sync pipeline</span><span>34 checked functions</span></div></div>
+    <div class="row"><div class="cat">AI</div><div class="solves"><span>Local-first email classifier</span><span class="flag">flag{e537860}</span></div></div>
+    <div class="row"><div class="cat">Security</div><div class="solves"><span>Row-level security</span><span>Prompt-injection guard</span></div></div>
+    <div class="row"><div class="cat">Data</div><div class="solves"><span>Sheets two-way sync</span><span>Spaced repetition</span></div></div>
+  </div>
+</body>
+</html>

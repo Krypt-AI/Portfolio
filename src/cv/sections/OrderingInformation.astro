@@ -1,0 +1,170 @@
+---
+import Icon from '../../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Value from '../../components/Value.astro';
+import { doc, sections, table } from '../data/document';
+import { profile } from '../../data/profile';
+import { isPlaceholder, resolve } from '../../lib/placeholder';
+
+/** Section 9: what can be ordered, from when, and how to get in touch. */
+const { availability, contact } = profile;
+const email = resolve(contact.email);
+const linkedin = resolve(contact.linkedin);
+---
+
+<section class="page sheet" aria-labelledby={sections.ordering.id}>
+  <SectionHeading section={sections.ordering} />
+
+  <div class="table-wrap">
+    <table class="dt dt--stack">
+      <caption><span class="caption__label">Table {table.ordering}.</span>Orderable Parts</caption>
+      <thead>
+        <tr>
+          <th scope="col">Orderable part</th>
+          <th scope="col">Status<sup class="fn">(1)</sup></th>
+          <th scope="col">Role</th>
+          <th scope="col">Available from</th>
+          <th scope="col">Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="value">{doc.partNumber}-IT</th>
+          <td data-label="Status"><span class="flag flag--active">Active</span></td>
+          <td data-label="Role">Industrial training (internship)</td>
+          <td data-label="Available from"><Value field={availability.internshipFrom} /></td>
+          <td data-label="Duration"><Value field={availability.internshipLength} /></td>
+        </tr>
+        <tr>
+          <th scope="row" class="value">{doc.partNumber}-FT</th>
+          <td data-label="Status"><span class="flag flag--preview">Preview</span></td>
+          <td data-label="Role">Junior developer, full-time</td>
+          <td data-label="Available from"><Value field={availability.fullTimeFrom} /></td>
+          <td data-label="Duration">Permanent</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="footnotes">
+    <li>(1) Active: available for placement now. Preview: available after graduation.</li>
+  </ol>
+
+  <div class="contact">
+    <SectionHeading level={3} number="9.1" title="How to Order" id="how-to-order" />
+    <div class="contact__email">
+      <a class="contact__address" href={`mailto:${email}`}><Value field={contact.email} /></a>
+      <button class="button button--quiet contact__copy" type="button" data-copy={email}>
+        <Icon name="copy" class="contact__copy-icon" />
+        <Icon name="check" class="contact__done-icon" />
+        <span data-copy-label>Copy</span>
+      </button>
+      <span class="visually-hidden" role="status" data-copy-status></span>
+    </div>
+    <ul class="link-row">
+      <li>
+        <a href={linkedin} target="_blank" rel="noopener" class:list={{ tbd: isPlaceholder(contact.linkedin) }}>
+          LinkedIn<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a href={contact.github} target="_blank" rel="noopener">
+          GitHub<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        {
+          contact.cv ? (
+            <a href={contact.cv} download>
+              CV (PDF)
+            </a>
+          ) : (
+            <button class="link-button" type="button" data-print>
+              Save this sheet as a PDF
+            </button>
+          )
+        }
+      </li>
+    </ul>
+    <p class="contact__where">
+      Based in <Value field={profile.location} />. Open to <Value field={availability.arrangements} />.
+    </p>
+  </div>
+</section>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = button.querySelector<HTMLElement>('[data-copy-label]');
+    const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    let reset: number | undefined;
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        button.classList.add('is-done');
+        if (label) label.textContent = 'Copied';
+        if (status) status.textContent = 'Email address copied';
+      } catch {
+        if (status) status.textContent = 'Copy failed. Select the address and copy it instead.';
+      }
+      window.clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        button.classList.remove('is-done');
+        if (label) label.textContent = 'Copy';
+        if (status) status.textContent = '';
+      }, 2400);
+    });
+  }
+</script>
+
+<style>
+  .contact :global(.heading--3) {
+    margin-top: var(--space-8);
+  }
+
+  .contact__email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    margin-block: var(--space-3) var(--space-5);
+  }
+
+  .contact__address {
+    font-size: clamp(1.625rem, 1rem + 2.6vw, 3rem);
+    font-weight: 750;
+    font-stretch: var(--stretch-expanded);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.16em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__copy :global(.contact__done-icon),
+  .contact__copy.is-done :global(.contact__copy-icon) {
+    display: none;
+  }
+
+  .contact__copy.is-done :global(.contact__done-icon) {
+    display: block;
+  }
+
+  .link-row .link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-underline-offset: 0.22em;
+  }
+
+  .link-row .link-button:hover {
+    color: var(--red);
+  }
+
+  .contact__where {
+    margin-top: var(--space-4);
+    color: var(--ink-2);
+  }
+</style>

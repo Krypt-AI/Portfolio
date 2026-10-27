@@ -1,0 +1,310 @@
+---
+import { application } from '../data/application';
+import { figure } from '../data/document';
+
+/**
+ * Figure 1. The app drawn as a chip, with a net to each service it talks to. Built from
+ * HTML so the labels stay readable on a phone; read as one image by assistive tech.
+ */
+const nets = [
+  {
+    pin: 'AUTH',
+    via: 'OAuth 2.0 with PKCE',
+    direction: 'out',
+    block: 'Google sign-in',
+    detail: 'Login, Gmail and Sheets each asked for separately',
+  },
+  {
+    pin: 'GMAIL',
+    via: 'gmail.modify, HTTPS',
+    direction: 'out',
+    block: 'Gmail API',
+    detail: 'Reads, labels and saves drafts; never sends',
+  },
+  {
+    pin: 'SHEET',
+    via: 'Two-way sync',
+    direction: 'out',
+    block: 'Google Sheets',
+    detail: 'The tracker, every 15 minutes and after changes',
+  },
+  {
+    pin: 'LLM',
+    via: 'Validated JSON',
+    direction: 'out',
+    block: 'Ollama or Claude',
+    detail: 'Local by default; at most 6,000 characters per email',
+  },
+  {
+    pin: 'PUSH',
+    via: 'Pub/Sub, optional',
+    direction: 'in',
+    block: 'Gmail push',
+    detail: 'Starts a sync; carries no data Specify trusts',
+  },
+] as const;
+
+/** The blocks inside U1, drawn in full as Figure 5. */
+const internals = ['app/api', 'services/classification', 'services/workflows', 'worker + beat'];
+
+const description = `Block diagram. ${application.name}, a FastAPI, Celery and React app run with Docker Compose, ${nets
+  .map((net) => `uses ${net.via} to reach ${net.block}: ${net.detail}`)
+  .join('; ')}.`;
+---
+
+<figure class="figure schematic" id={`figure-${figure.schematic}`}>
+  <div class="schematic__drawing" role="img" aria-label={description} style={`--nets: ${nets.length}`}>
+    <div class="schematic__device">
+      <span class="schematic__ref mono">U1</span>
+      <span class="schematic__name">{application.name}</span>
+      <span class="schematic__sub">FastAPI, Celery and React, run with Docker Compose</span>
+      <ul class="schematic__internals">
+        {
+          internals.map((block) => (
+            <li class="mono">
+              {block.split('/').map((part, index, parts) => (
+                <>
+                  {part}
+                  {index < parts.length - 1 && (
+                    <>
+                      /<wbr />
+                    </>
+                  )}
+                </>
+              ))}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    {
+      nets.map((net, index) => (
+        <div class="schematic__net" style={`--row: ${index + 1}`}>
+          <span class="schematic__pin mono">{net.pin}</span>
+          <span class:list={['schematic__wire', `schematic__wire--${net.direction}`]}>
+            <span class="schematic__via">{net.via}</span>
+          </span>
+          <span class="schematic__block">
+            <strong>{net.block}</strong>
+            <span>{net.detail}</span>
+            <span class="schematic__via-inline">{net.via}</span>
+          </span>
+        </div>
+      ))
+    }
+  </div>
+  <figcaption class="figure__caption">
+    <span class="caption__label">Figure {figure.schematic}.</span>Simplified block diagram: {application.name} and the services it
+    talks to. Section 6.2 shows the modules inside U1.
+  </figcaption>
+</figure>
+
+<style>
+  .schematic__drawing {
+    display: grid;
+    grid-template-columns:
+      [device-start] minmax(10rem, 15rem)
+      [pins] 4.5rem
+      [device-end wire] minmax(8rem, 1fr)
+      [block] minmax(15rem, 20rem)
+      [end];
+    row-gap: var(--space-4);
+    padding: var(--space-6) 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: var(--line);
+  }
+
+  .schematic__device {
+    grid-column: device-start / device-end;
+    grid-row: 1 / span var(--nets);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4) calc(4.5rem + var(--space-3)) var(--space-4) var(--space-4);
+    border: 2px solid var(--ink);
+    background: var(--paper);
+  }
+
+  .schematic__ref {
+    position: absolute;
+    top: calc(-1 * var(--space-5));
+    left: 0;
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  .schematic__name {
+    font-size: var(--step-1);
+    font-weight: 750;
+    font-stretch: var(--stretch-expanded);
+    line-height: 1.15;
+  }
+
+  .schematic__sub {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  .schematic__internals {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    margin-top: auto;
+    padding: var(--space-4) 0 0;
+    list-style: none;
+  }
+
+  .schematic__internals li {
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--instrument);
+    font-size: var(--step--2);
+    color: var(--ink-2);
+  }
+
+  .schematic__net {
+    grid-column: pins / end;
+    grid-row: var(--row);
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+  }
+
+  .schematic__pin {
+    z-index: 1;
+    justify-self: end;
+    padding-right: var(--space-3);
+    font-size: var(--step--1);
+  }
+
+  .schematic__wire {
+    position: relative;
+    align-self: stretch;
+    min-height: 3rem;
+  }
+
+  .schematic__wire::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .schematic__wire::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 9px;
+    height: 10px;
+    translate: 0 calc(-50% + 0.75px);
+    background: var(--ink);
+  }
+
+  .schematic__wire--out::after {
+    right: 0;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  .schematic__wire--in::after {
+    left: 0;
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  .schematic__via {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    translate: -50% -0.3rem;
+    font-size: var(--step--2);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .schematic__block {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2) var(--space-4);
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-size: var(--step--1);
+    line-height: 1.4;
+  }
+
+  .schematic__block span {
+    color: var(--ink-3);
+  }
+
+  .schematic__via-inline {
+    display: none;
+  }
+
+  /* Narrow screens: U1 on top, the nets branch off a bus below it. */
+  @media (max-width: 52rem) {
+    .schematic__drawing {
+      grid-template-columns: [device-start bus] 1.25rem [pins] 3.5rem [wire] 1.5rem [block] minmax(0, 1fr) [device-end end];
+      padding-top: var(--space-7);
+    }
+
+    .schematic__device {
+      grid-column: device-start / end;
+      grid-row: 1;
+      padding-right: var(--space-4);
+    }
+
+    .schematic__internals {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .schematic__net {
+      grid-column: device-start / end;
+      grid-row: auto;
+      position: relative;
+    }
+
+    .schematic__net::before,
+    .schematic__net::after {
+      content: '';
+      position: absolute;
+      left: 0.6rem;
+    }
+
+    .schematic__net::before {
+      top: calc(-1 * var(--space-4) - 2px);
+      bottom: 50%;
+      border-left: 1.5px solid var(--ink);
+    }
+
+    .schematic__net::after {
+      top: 50%;
+      width: 0.65rem;
+      border-top: 1.5px solid var(--ink);
+    }
+
+    .schematic__pin {
+      grid-column: pins;
+      justify-self: start;
+      padding-left: var(--space-1);
+    }
+
+    .schematic__wire {
+      grid-column: wire;
+      min-height: 2.5rem;
+    }
+
+    .schematic__block {
+      grid-column: block;
+    }
+
+    .schematic__via {
+      display: none;
+    }
+
+    .schematic__via-inline {
+      display: block;
+      margin-top: var(--space-1);
+      font-size: var(--step--2);
+    }
+  }
+</style>

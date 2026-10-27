@@ -1,0 +1,23 @@
+---
+import { doc } from '../data/document';
+
+/** The header line at the top of every datasheet page: part number and document code. */
+---
+
+<div class="running-head">
+  <span class="mono">{doc.partNumber}</span>
+  <span class="mono">{doc.code}{doc.revision} – REVISED {doc.revised.toUpperCase()}</span>
+</div>
+
+<style>
+  .running-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--ink);
+    font-size: var(--step--2);
+    color: var(--ink-2);
+  }
+</style>

@@ -1,0 +1,161 @@
+---
+import BarChart from '../components/BarChart.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Value from '../../components/Value.astro';
+import { application, characteristics, linesByLayer, testsByArea } from '../data/application';
+import { figure, sections, table } from '../data/document';
+import { profile } from '../../data/profile';
+
+/** Section 5: when and how the owner can work, and what their latest build measures. */
+const { availability } = profile;
+const operating = [
+  { parameter: 'Industrial training start', conditions: 'Earliest date', value: availability.internshipFrom },
+  { parameter: 'Industrial training length', conditions: 'Set by the programme', value: availability.internshipLength },
+  { parameter: 'Full-time start', conditions: 'After graduation', value: availability.fullTimeFrom },
+  { parameter: 'Working arrangement', conditions: 'Open to', value: availability.arrangements },
+  { parameter: 'Location', conditions: 'Based in', value: profile.location },
+  { parameter: 'Languages', conditions: 'Spoken and written', value: profile.languages },
+];
+const totalLines = linesByLayer.reduce((sum, layer) => sum + layer.value, 0);
+const totalTests = testsByArea.reduce((sum, area) => sum + area.value, 0);
+---
+
+<section class="page sheet" aria-labelledby={sections.specifications.id}>
+  <SectionHeading section={sections.specifications} />
+
+  <div class="specs">
+    <div>
+      <SectionHeading level={3} number="5.1" title="Recommended Operating Conditions" id="operating-conditions" />
+      <div class="table-wrap">
+        <table class="dt">
+          <caption><span class="caption__label">Table {table.operating}.</span>Recommended Operating Conditions</caption>
+          <thead>
+            <tr>
+              <th scope="col">Parameter</th>
+              <th scope="col">Conditions</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              operating.map((row) => (
+                <tr>
+                  <th scope="row">{row.parameter}</th>
+                  <td class="conditions">{row.conditions}</td>
+                  <td>
+                    <Value field={row.value} />
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <SectionHeading level={3} number="5.2" title="Characteristics" id="characteristics" />
+      <div class="table-wrap">
+        <table class="dt dt--stack">
+          <caption>
+            <span class="caption__label">Table {table.characteristics}.</span>Characteristics, measured on {
+              application.name
+            } at commit <span class="mono">{application.commit}</span>
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Parameter</th>
+              <th scope="col">Test conditions</th>
+              <th scope="col" class="num">Value</th>
+              <th scope="col">Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              characteristics.map((row) => (
+                <tr>
+                  <th scope="row">{row.parameter}</th>
+                  <td class="conditions" data-label="Conditions">{row.conditions}</td>
+                  <td class="num value" data-label="Value">
+                    <span data-unit={row.unit === '—' ? undefined : row.unit}>{row.value}</span>
+                  </td>
+                  <td class="unit" data-stack-hide>{row.unit}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <SectionHeading level={3} number="5.3" title="Typical Characteristics" id="typical-characteristics" />
+  <div class="curves">
+    <figure class="figure" id={`figure-${figure.linesByLayer}`}>
+      <BarChart
+        data={linesByLayer}
+        unit="lines"
+        ticks={[0, 1000, 2000, 3000, 4000, 5000, 6000]}
+        emphasis="Domain services"
+        columns={['Layer', 'Lines']}
+      />
+      <figcaption class="figure__caption">
+        <span class="caption__label">Figure {figure.linesByLayer}.</span>Source lines by layer, {
+          totalLines.toLocaleString('en-US')
+        } in total. The domain services are the largest layer: routes stay thin, and validate, authorize and delegate.
+      </figcaption>
+    </figure>
+
+    <figure class="figure" id={`figure-${figure.testsByArea}`}>
+      <BarChart
+        data={testsByArea}
+        unit="tests"
+        ticks={[0, 25, 50, 75, 100, 125]}
+        emphasis="Security and access"
+        columns={['Area', 'Test cases']}
+      />
+      <figcaption class="figure__caption">
+        <span class="caption__label">Figure {figure.testsByArea}.</span>Backend test cases by area, {totalTests} in total.
+        Most are security and access tests: one walks every API route and requires a session, and others prove one user
+        cannot reach another's records.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .specs {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .specs :global(.heading--3) {
+    margin-top: 0;
+  }
+
+  .conditions,
+  .unit {
+    color: var(--ink-2);
+  }
+
+  .curves {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (max-width: 60rem) {
+    .specs,
+    .curves {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-7);
+    }
+
+    .specs > div + div :global(.heading--3) {
+      margin-top: var(--space-4);
+    }
+  }
+</style>

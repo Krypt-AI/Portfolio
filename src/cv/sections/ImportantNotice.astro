@@ -1,0 +1,89 @@
+---
+import Value from '../../components/Value.astro';
+import { projects } from '../../data/projects';
+import { profile } from '../../data/profile';
+import { doc } from '../data/document';
+
+/** The closing notice every datasheet ends with, here a promise that it can all be checked. */
+---
+
+<footer class="notice">
+  <div class="sheet notice__inner">
+    <h2 class="notice__title">Important Notice</h2>
+    <div class="notice__body">
+      <p>
+        Every figure, table and pin on this sheet can be checked against public source at
+        <a href={profile.contact.github}>github.com/Krypt-AI</a>. The numbers were counted at these commits: {
+          projects.map((project, index) => (
+            <>
+              {project.name} <span class="mono">{project.commit}</span>{index < projects.length - 1 ? ', ' : '.'}
+            </>
+          ))
+        }
+      </p>
+      <p class="notice__colophon">
+        Built with Astro. Set in Archivo and Fragment Mono. Prints as a datasheet; the website at <a href="/">/</a>
+        shows the same work as a project exhibition.
+      </p>
+    </div>
+    <p class="notice__copyright">
+      <span>Copyright © {doc.year}, <Value field={profile.name} /></span>
+      <span class="mono">{doc.code}{doc.revision}</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .notice {
+    margin-top: var(--space-6);
+    padding-block: var(--space-7) var(--space-6);
+    background: var(--paper-sunk);
+    border-top: 2px solid var(--ink);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+
+  .notice__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .notice__title {
+    font-size: var(--step--1);
+    font-weight: 700;
+    font-stretch: var(--stretch-condensed);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .notice__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    max-width: var(--measure);
+  }
+
+  .notice__colophon {
+    color: var(--ink-3);
+  }
+
+  .notice__copyright {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
+    padding-top: var(--space-4);
+    border-top: var(--line);
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 48rem) {
+    .notice__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

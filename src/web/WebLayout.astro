@@ -1,0 +1,42 @@
+---
+import '@fontsource-variable/big-shoulders/standard.css';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+import './styles/tokens.css';
+import './styles/base.css';
+import './styles/wall.css';
+import Base from '../layouts/Base.astro';
+
+/** The website's shell: the exhibition's type, tokens and wall. */
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, jsonLd } = Astro.props;
+---
+
+<Base title={title} description={description} themeColor="#111418" jsonLd={jsonLd}>
+  <slot />
+
+  <script>
+    // Each poster pins once, the first time it comes into view. Without this script, or with
+    // reduced motion, the posters simply hang there.
+    const posters = [...document.querySelectorAll<HTMLElement>('[data-poster]')];
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const arriving = entries.filter((entry) => entry.isIntersecting).map((entry) => entry.target as HTMLElement);
+          arriving.forEach((poster, order) => {
+            poster.style.setProperty('--order', String(order));
+            poster.classList.add('is-pinning');
+            observer.unobserve(poster);
+          });
+        },
+        { threshold: 0.08 },
+      );
+      for (const poster of posters) observer.observe(poster);
+    }
+  </script>
+</Base>

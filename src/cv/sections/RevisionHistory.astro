@@ -1,0 +1,117 @@
+---
+import SectionHeading from '../components/SectionHeading.astro';
+import Value from '../../components/Value.astro';
+import { sections } from '../data/document';
+import { revisions } from '../../data/revisions';
+
+/** Section 8: the owner's timeline, set as a datasheet's revision history. */
+const entries = revisions.map((revision, index) => {
+  const previous = revisions[index + 1];
+  return { ...revision, previous };
+});
+---
+
+<section aria-labelledby={sections.revisions.id}>
+  <SectionHeading section={sections.revisions} />
+  <div class="revisions">
+    {
+      entries.map(({ rev, date, changes, previous }) => (
+        <div class="revision">
+          <h3 class="revision__title">
+            {previous ? (
+              <>
+                Changes from Revision {previous.rev} (<Value field={previous.date} />) to Revision {rev} (<Value field={date} />)
+              </>
+            ) : (
+              <>
+                Revision {rev} (<Value field={date} />)
+              </>
+            )}
+          </h3>
+          <ul class="revision__changes">
+            <li class="revision__head" aria-hidden="true">
+              <span />
+              <span>Section</span>
+            </li>
+            {changes.map((change) => (
+              <li>
+                <span class="revision__text">
+                  <Value field={change.text} />
+                </span>
+                <a class="revision__ref" href={change.section.href}>
+                  <span class="visually-hidden">Section </span>
+                  {change.section.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .revisions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .revision__title {
+    margin-bottom: var(--space-2);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .revision__changes {
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+    border-top: 1px solid var(--ink);
+  }
+
+  .revision__changes li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: var(--line);
+  }
+
+  /* Dot leaders run from each change to its section number, as in a printed datasheet. */
+  .revision__text {
+    display: flex;
+    flex: 1;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .revision__text::after {
+    content: '';
+    flex: 1;
+    min-width: var(--space-6);
+    border-bottom: 2px dotted var(--instrument);
+    translate: 0 -0.25em;
+  }
+
+  .revision__ref {
+    flex: none;
+    min-width: 3.5rem;
+    text-align: right;
+    font-family: var(--font-mono);
+  }
+
+  .revision__changes .revision__head {
+    justify-content: space-between;
+    padding-block: var(--space-1);
+    font-size: var(--step--2);
+    font-stretch: var(--stretch-condensed);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--paper-sunk);
+  }
+
+</style>

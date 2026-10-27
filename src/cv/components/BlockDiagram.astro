@@ -1,0 +1,210 @@
+---
+import { figure } from '../data/document';
+
+/**
+ * Figure 5. The modules inside Specify and the services outside it. Drawn on a fixed grid
+ * like a datasheet's functional block diagram; scrolls sideways on phones rather than
+ * shrinking past legibility.
+ */
+type Block = { x: number; y: number; title: string; detail: string };
+
+const W = 176;
+const H = 64;
+const COL = { a: 40, b: 286, c: 532 };
+const ROW = { ui: 92, run: 212, data: 332 };
+const mid = (x: number) => x + W / 2;
+const middle = (y: number) => y + H / 2;
+
+const inside: Block[] = [
+  { x: COL.a, y: ROW.ui, title: 'Frontend', detail: 'React 19, 16 pages' },
+  { x: COL.b, y: ROW.ui, title: 'Workflow builder', detail: 'React Flow canvas' },
+  { x: COL.c, y: ROW.ui, title: 'API client', detail: 'TanStack Query, typed' },
+  { x: COL.a, y: ROW.run, title: 'FastAPI', detail: '86 routes, all checked' },
+  { x: COL.b, y: ROW.run, title: 'Celery worker', detail: 'sync, classify, draft' },
+  { x: COL.c, y: ROW.run, title: 'Celery beat', detail: 'polling and reminders' },
+  { x: COL.a, y: ROW.data, title: 'PostgreSQL', detail: '25 tables, per-user RLS' },
+  { x: COL.b, y: ROW.data, title: 'Workflow engine', detail: '21 step types, retries' },
+  { x: COL.c, y: ROW.data, title: 'Email pipeline', detail: 'rules, AI, labels' },
+];
+
+const GOOGLE_Y = 548;
+const google: Block[] = [
+  { x: COL.b, y: GOOGLE_Y, title: 'Gmail API', detail: 'sync, labels, drafts' },
+  { x: COL.c, y: GOOGLE_Y, title: 'Google Sheets', detail: 'two-way tracker' },
+];
+
+const ai: Block = { x: 790, y: ROW.data, title: 'Ollama or Claude', detail: 'local by default' };
+
+const UI_BUS_Y = 176;
+const GOOGLE_BUS_Y = 494;
+---
+
+<figure class="figure block-diagram" id={`figure-${figure.blockDiagram}`}>
+  <div class="block-diagram__scroll">
+    <svg
+      viewBox="0 0 1000 640"
+      role="img"
+      aria-labelledby={`figure-${figure.blockDiagram}-caption`}
+      aria-describedby="block-diagram-description"
+    >
+      <desc id="block-diagram-description">
+        The frontend, the workflow builder and the API client sit on one bus that calls FastAPI over HTTPS with a
+        session cookie. FastAPI reads and writes PostgreSQL through a restricted role and hands slow work to the Celery
+        worker through Redis; Celery beat schedules polling and reminders. The worker runs the workflow engine, which
+        saves its state in PostgreSQL and drives the email pipeline. The pipeline asks Ollama or Claude for a validated
+        classification, and talks to the Gmail API and Google Sheets.
+      </desc>
+      <defs>
+        <marker id="bd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M0 1 L10 5 L0 9 Z" class="bd-arrowhead"></path>
+        </marker>
+      </defs>
+
+      <rect class="bd-device" x="20" y="40" width="700" height="420"></rect>
+      <text class="bd-group" x="36" y="68">SPECIFY · DOCKER COMPOSE</text>
+
+      <rect class="bd-group-box" x="262" y="520" width="458" height="104"></rect>
+      <text class="bd-group" x={mid(COL.b) + 18} y="541">GOOGLE · HOSTED</text>
+
+      {/* The UI row shares one bus into FastAPI */}
+      {[COL.a, COL.b, COL.c].map((x) => <line class="bd-wire" x1={mid(x)} y1={ROW.ui + H} x2={mid(x)} y2={UI_BUS_Y} />)}
+      <line class="bd-wire" x1={mid(COL.a)} y1={UI_BUS_Y} x2={mid(COL.c)} y2={UI_BUS_Y} />
+      <line class="bd-wire" x1={mid(COL.a)} y1={UI_BUS_Y} x2={mid(COL.a)} y2={ROW.run - 2} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={mid(COL.a) + 8} y={UI_BUS_Y + 22}>HTTPS · SESSION</text>
+
+      {/* FastAPI enqueues work for the worker; beat schedules it */}
+      <line class="bd-wire" x1={COL.a + W} y1={middle(ROW.run)} x2={COL.b - 2} y2={middle(ROW.run)} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={(COL.a + W + COL.b) / 2} y={middle(ROW.run) - 8} text-anchor="middle">REDIS</text>
+      <line class="bd-wire" x1={COL.c} y1={middle(ROW.run)} x2={COL.b + W + 2} y2={middle(ROW.run)} marker-end="url(#bd-arrow)" />
+
+      {/* FastAPI to the database, through the restricted role */}
+      <line class="bd-wire" x1={mid(COL.a)} y1={ROW.run + H} x2={mid(COL.a)} y2={ROW.data - 2} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={mid(COL.a) + 8} y={ROW.run + H + 32}>RLS ROLE</text>
+
+      {/* The worker runs the engine; the engine saves state and drives the pipeline */}
+      <line class="bd-wire" x1={mid(COL.b)} y1={ROW.run + H} x2={mid(COL.b)} y2={ROW.data - 2} marker-end="url(#bd-arrow)" />
+      <line class="bd-wire" x1={COL.b} y1={middle(ROW.data)} x2={COL.a + W + 2} y2={middle(ROW.data)} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={(COL.a + W + COL.b) / 2} y={middle(ROW.data) - 8} text-anchor="middle">STATE</text>
+      <line class="bd-wire" x1={COL.b + W} y1={middle(ROW.data)} x2={COL.c - 2} y2={middle(ROW.data)} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={(COL.b + W + COL.c) / 2} y={middle(ROW.data) - 8} text-anchor="middle">STEPS</text>
+
+      {/* The pipeline asks the model for a validated classification */}
+      <line class="bd-wire" x1={COL.c + W} y1={middle(ROW.data)} x2={ai.x - 2} y2={middle(ROW.data)} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={(COL.c + W + ai.x) / 2} y={middle(ROW.data) - 8} text-anchor="middle">JSON</text>
+
+      {/* The pipeline talks to Google */}
+      <line class="bd-wire" x1={mid(COL.c)} y1={ROW.data + H} x2={mid(COL.c)} y2={GOOGLE_BUS_Y} />
+      <line class="bd-wire" x1={mid(COL.b)} y1={GOOGLE_BUS_Y} x2={mid(COL.c)} y2={GOOGLE_BUS_Y} />
+      <line class="bd-wire" x1={mid(COL.b)} y1={GOOGLE_BUS_Y} x2={mid(COL.b)} y2={GOOGLE_Y - 2} marker-end="url(#bd-arrow)" />
+      <line class="bd-wire" x1={mid(COL.c)} y1={GOOGLE_BUS_Y} x2={mid(COL.c)} y2={GOOGLE_Y - 2} marker-end="url(#bd-arrow)" />
+      <text class="bd-label" x={mid(COL.b) + 8} y={GOOGLE_BUS_Y - 8}>OAUTH TOKENS, ENCRYPTED</text>
+
+      {
+        [...inside, ...google, ai].map((block) => (
+          <g>
+            <rect class="bd-block" x={block.x} y={block.y} width={W} height={H} />
+            <text class="bd-title" x={block.x + 14} y={block.y + 27}>
+              {block.title}
+            </text>
+            <text class="bd-detail" x={block.x + 14} y={block.y + 47}>
+              {block.detail}
+            </text>
+          </g>
+        ))
+      }
+    </svg>
+  </div>
+  <p class="block-diagram__hint" aria-hidden="true">Scroll sideways to see the whole diagram.</p>
+  <figcaption class="figure__caption" id={`figure-${figure.blockDiagram}-caption`}>
+    <span class="caption__label">Figure {figure.blockDiagram}.</span>Functional block diagram. The API only enqueues
+    work; anything slow runs in the Celery worker, and the workflow engine saves every step, so a restart resumes where
+    it stopped.
+  </figcaption>
+</figure>
+
+<style>
+  .block-diagram__scroll {
+    overflow-x: auto;
+    padding-block: var(--space-4);
+    border-top: 2px solid var(--ink);
+    border-bottom: var(--line);
+  }
+
+  .block-diagram svg {
+    width: 100%;
+    min-width: 46rem;
+    max-width: 62.5rem;
+  }
+
+  .block-diagram__hint {
+    display: none;
+    margin-top: var(--space-2);
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 62rem) {
+    .block-diagram__hint {
+      display: block;
+    }
+  }
+
+  .bd-device {
+    fill: var(--paper-inset);
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+
+  .bd-group-box {
+    fill: none;
+    stroke: var(--instrument);
+    stroke-width: 1.5;
+  }
+
+  .bd-group {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 650;
+    font-stretch: var(--stretch-condensed);
+    letter-spacing: 0.07em;
+    fill: var(--ink-3);
+  }
+
+  .bd-block {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .bd-title {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 650;
+    fill: var(--ink);
+  }
+
+  .bd-detail {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    fill: var(--ink-3);
+  }
+
+  .bd-wire {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .bd-arrowhead {
+    fill: var(--ink);
+  }
+
+  .bd-label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 650;
+    font-stretch: var(--stretch-condensed);
+    letter-spacing: 0.08em;
+    fill: var(--ink-2);
+  }
+</style>

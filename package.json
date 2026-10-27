@@ -1,0 +1,29 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Personal portfolio of a Diploma in Computer Science student, set as a component datasheet.",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build",
+    "build:draft": "astro build --mode draft",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/atkinson-hyperlegible-mono": "^5.3.0",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource-variable/big-shoulders": "^5.3.0",
+    "@fontsource/fragment-mono": "^5.3.0",
+    "astro": "^7.3.5",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.19.1",
+    "@types/qrcode": "^1.5.6",
+    "typescript": "^6.0.3"
+  }
+}

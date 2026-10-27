@@ -1,0 +1,107 @@
+/*
+ * Print: the page becomes the datasheet it imitates. Until a CV file is added, the CV
+ * button prints this, so it has to hold up as a PDF attached to an application.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  :root {
+    --gutter: 0px;
+    --bar-height: 0px;
+  }
+
+  html {
+    font-size: 11px;
+  }
+
+  body {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bar,
+  .draft,
+  .skip-link,
+  .chart__tip,
+  .chart__data,
+  .contact__copy,
+  .contact .link-button {
+    display: none !important;
+  }
+
+  .page,
+  .page-one {
+    padding-block: 0 6mm;
+  }
+
+  /* Each datasheet page ends its printed page: footer, then a break, then the next head. */
+  .page-break__gap {
+    height: 0;
+    border: 0;
+    background: none;
+    break-after: page;
+  }
+
+  .heading,
+  .caption,
+  caption {
+    break-after: avoid;
+  }
+
+  figure,
+  tr,
+  .part-box,
+  .schematic__drawing,
+  .listing,
+  .revision,
+  .contact {
+    break-inside: avoid;
+  }
+
+  .pinout__figure {
+    position: static;
+  }
+
+  .pinout__drawing {
+    max-width: 90mm;
+  }
+
+  .shot {
+    max-height: 125mm;
+    width: auto;
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  .table-wrap,
+  .block-diagram__scroll {
+    overflow: visible;
+  }
+
+  .block-diagram svg {
+    min-width: 0;
+  }
+
+  /* Printed links can't be clicked, so the contact links spell out where they go. */
+  .link-row a[href^='http']::after {
+    content: ' ' attr(href);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  .link-row svg,
+  .dt a svg,
+  .facts a svg,
+  .visually-hidden {
+    display: none;
+  }
+
+  .notice {
+    background: none;
+  }
+}

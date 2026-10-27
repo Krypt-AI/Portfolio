@@ -1,0 +1,185 @@
+---
+import Icon from '../../components/Icon.astro';
+import Value from '../../components/Value.astro';
+import { profile } from '../../data/profile';
+import { isPlaceholder, resolve } from '../../lib/placeholder';
+
+/** The close of the wall: how to reach the presenter, then the colophon. */
+const { contact, availability } = profile;
+const email = resolve(contact.email);
+const linkedin = resolve(contact.linkedin);
+const cvHref = contact.cv ?? '/cv';
+---
+
+<section class="desk" id="contact" aria-labelledby="contact-title">
+  <div class="desk__inner wall">
+    <h2 class="desk__title" id="contact-title">Let's talk</h2>
+    <p class="desk__lead">
+      I'm looking for an industrial training placement from <Value field={availability.internshipFrom} />, and a
+      full-time role from <Value field={availability.fullTimeFrom} />. Email reaches me directly.
+    </p>
+
+    <div class="desk__email">
+      <a class="desk__address" href={`mailto:${email}`}><Value field={contact.email} /></a>
+      <button class="button desk__copy" type="button" data-copy={email}>
+        <Icon name="copy" class="desk__copy-icon" />
+        <Icon name="check" class="desk__done-icon" />
+        <span data-copy-label>Copy address</span>
+      </button>
+      <span class="visually-hidden" role="status" data-copy-status></span>
+    </div>
+
+    <ul class="desk__links">
+      <li>
+        <a class="link-out" href={contact.github} target="_blank" rel="noopener">
+          GitHub<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a class:list={['link-out', { tbd: isPlaceholder(contact.linkedin) }]} href={linkedin} target="_blank" rel="noopener">
+          LinkedIn<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a class="link-out" href={cvHref} {...(contact.cv ? { download: '' } : {})}>
+          {contact.cv ? 'CV (PDF)' : 'Printable CV'}
+        </a>
+      </li>
+    </ul>
+    <p class="desk__where">
+      Based in <Value field={profile.location} />. Open to <Value field={availability.arrangements} />.
+    </p>
+  </div>
+
+  <footer class="colophon wall">
+    <p>
+      Every number on this wall was counted from the public repositories at the commit shown on each poster. The
+      printable CV tells Specify in full.
+    </p>
+    <p>Built with Astro. Set in Big Shoulders and Atkinson Hyperlegible.</p>
+  </footer>
+</section>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = button.querySelector<HTMLElement>('[data-copy-label]');
+    const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    const idle = label?.textContent ?? '';
+    let reset: number | undefined;
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        button.classList.add('is-done');
+        if (label) label.textContent = 'Copied';
+        if (status) status.textContent = 'Email address copied';
+      } catch {
+        if (status) status.textContent = 'Copy failed. Select the address and copy it instead.';
+      }
+      window.clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        button.classList.remove('is-done');
+        if (label) label.textContent = idle;
+        if (status) status.textContent = '';
+      }, 2400);
+    });
+  }
+</script>
+
+<style>
+  .desk {
+    margin-top: var(--space-8);
+    background: var(--banner);
+    color: var(--on-banner);
+  }
+
+  .desk__inner {
+    padding-block: var(--space-8) var(--space-7);
+  }
+
+  .desk__title {
+    font-family: var(--font-display);
+    font-size: var(--step-title-lead);
+    font-weight: 800;
+    line-height: 0.92;
+  }
+
+  .desk__lead {
+    margin-top: var(--space-4);
+    max-width: 52ch;
+    color: var(--on-banner-muted);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .desk__lead :global(.tbd),
+  .desk__where :global(.tbd) {
+    text-decoration-color: var(--pin-on-dark);
+  }
+
+  .desk__email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+    margin-top: var(--space-6);
+  }
+
+  .desk__address {
+    font-family: var(--font-display);
+    font-size: var(--step-address);
+    font-weight: 800;
+    line-height: 1;
+    overflow-wrap: anywhere;
+    text-decoration-color: var(--pin);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.12em;
+  }
+
+  .desk__copy :global(.desk__done-icon),
+  .desk__copy.is-done :global(.desk__copy-icon) {
+    display: none;
+  }
+
+  .desk__copy.is-done :global(.desk__done-icon) {
+    display: block;
+  }
+
+  .desk__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-6);
+    margin-top: var(--space-6);
+    padding: 0;
+    list-style: none;
+    font-size: var(--step-1);
+  }
+
+  .desk__links :global(.tbd) {
+    text-decoration-color: var(--pin-on-dark);
+  }
+
+  .desk__where {
+    margin-top: var(--space-5);
+    color: var(--on-banner-muted);
+  }
+
+  .desk :focus-visible {
+    outline-color: var(--sheet);
+  }
+
+  .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-6);
+    padding-block: var(--space-5) var(--space-6);
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    color: var(--on-banner-muted);
+    font-size: var(--step--1);
+  }
+
+  .colophon p {
+    max-width: 70ch;
+  }
+</style>

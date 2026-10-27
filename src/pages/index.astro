@@ -1,0 +1,132 @@
+---
+import DraftNotice from '../components/DraftNotice.astro';
+import { profile } from '../data/profile';
+import { projects } from '../data/projects';
+import { assertReadyToShip } from '../data/readiness';
+import { skills } from '../data/skills';
+import { resolve } from '../lib/placeholder';
+import AboutPoster from '../web/components/AboutPoster.astro';
+import Banner from '../web/components/Banner.astro';
+import CertificatesPoster from '../web/components/CertificatesPoster.astro';
+import ContactDesk from '../web/components/ContactDesk.astro';
+import HandoutPoster from '../web/components/HandoutPoster.astro';
+import ProjectPoster from '../web/components/ProjectPoster.astro';
+import SkillsPoster from '../web/components/SkillsPoster.astro';
+import WebLayout from '../web/WebLayout.astro';
+
+/**
+ * The website: the owner's public projects pinned up as posters at a project exhibition,
+ * then the presenter's own posters, then how to get in touch.
+ */
+assertReadyToShip();
+
+/** Where each project poster is pinned, in percent across its top edge. */
+const projectPins = [[7, 93], [44], [57]];
+
+const name = resolve(profile.name);
+const title = `${name}, full-stack and AI web developer`;
+const description = `${name}: ${profile.headline}. Three public projects as exhibition posters, with every number counted from the source.`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name,
+  description: profile.headline,
+  email: `mailto:${resolve(profile.contact.email)}`,
+  alumniOf: resolve(profile.institution),
+  knowsAbout: skills.map((skill) => skill.name),
+  sameAs: [profile.contact.github, resolve(profile.contact.linkedin)],
+};
+---
+
+<WebLayout title={title} description={description} jsonLd={jsonLd}>
+  <Banner />
+  <DraftNotice />
+  <main id="main">
+    <section class="wall wall--row" aria-label="Projects">
+      {
+        projects.map((project, index) => (
+          <ProjectPoster
+            project={project}
+            lead={index === 0}
+            pins={projectPins[index]}
+            caseStudy={index === 0 ? { label: 'Full case study in the CV', href: '/cv#application' } : undefined}
+          />
+        ))
+      }
+    </section>
+
+    <section class="wall wall--row wall--presenter" aria-label="About the presenter">
+      <AboutPoster />
+      <SkillsPoster />
+      <CertificatesPoster />
+      <HandoutPoster />
+    </section>
+  </main>
+  <ContactDesk />
+</WebLayout>
+
+<style>
+  /* The wall's rhythm: one lead poster at 1.6 fractions beside two at one, pinned on one line. */
+  .wall--row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--wall-gap);
+    padding-top: var(--space-7);
+  }
+
+  /* The presenter's posters: About beside a wide Skills sheet, the two short posters under it. */
+  .wall--presenter {
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'about skills skills'
+      'about certificates handout';
+    padding-top: var(--space-8);
+  }
+
+  .wall--presenter > :global(#about) {
+    grid-area: about;
+  }
+
+  .wall--presenter > :global(#skills) {
+    grid-area: skills;
+  }
+
+  .wall--presenter > :global(#certificates) {
+    grid-area: certificates;
+  }
+
+  .wall--presenter > :global(#handout) {
+    grid-area: handout;
+  }
+
+  /* Tablets and small laptops: the lead poster takes the whole row, the other two share the next. */
+  @media (max-width: 75rem) {
+    .wall--row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .wall--row > :global(.poster--lead) {
+      grid-column: 1 / -1;
+    }
+
+    .wall--presenter {
+      grid-template-rows: none;
+      grid-template-areas:
+        'about about'
+        'skills skills'
+        'certificates handout';
+    }
+  }
+
+  @media (max-width: 46rem) {
+    .wall--row {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: var(--space-6);
+    }
+
+    .wall--presenter {
+      grid-template-areas: 'about' 'skills' 'certificates' 'handout';
+    }
+  }
+</style>

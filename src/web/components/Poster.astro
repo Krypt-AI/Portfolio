@@ -1,0 +1,27 @@
+---
+/**
+ * One poster on the wall: a white sheet held up by push pins. `tone` picks the band colour
+ * (a project id, or the presenter's ink for the About, Skills and Certificates posters);
+ * `pins` places the pins across the top edge, in percent, so no two posters hang alike.
+ */
+interface Props {
+  id: string;
+  tone?: string;
+  class?: string;
+  pins?: number[];
+}
+
+const { id, tone = 'presenter', class: className, pins = [50] } = Astro.props;
+---
+
+<article class:list={['poster', `poster--${tone}`, className]} id={id} aria-labelledby={`${id}-title`} data-poster>
+  {
+    pins.map((x) => (
+      <svg class="poster__pin" style={`--pin-x: ${x}%`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle class="poster__pin-head" cx="12" cy="12" r="8.5" />
+        <circle class="poster__pin-collar" cx="12" cy="12" r="3.25" />
+      </svg>
+    ))
+  }
+  <slot />
+</article>

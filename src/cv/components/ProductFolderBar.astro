@@ -1,0 +1,276 @@
+---
+import { doc, navigation } from '../data/document';
+import { profile } from '../../data/profile';
+import { resolve } from '../../lib/placeholder';
+import Icon from '../../components/Icon.astro';
+import Value from '../../components/Value.astro';
+
+/**
+ * The datasheet's product-folder bar: who this is, the sections, and the two actions a
+ * recruiter came for. On phones the section links scroll away and the actions stay.
+ */
+const email = resolve(profile.contact.email);
+const initials = resolve(profile.initials).toUpperCase();
+const { cv } = profile.contact;
+---
+
+<header class="bar">
+  <div class="bar__inner sheet">
+
+    <a class="bar__mark" href="/" title="Back to the website">
+      <span class="monogram" aria-hidden="true">{initials}</span>
+      <span class="bar__name"><Value field={profile.name} /></span>
+      <span class="bar__part mono">{doc.partNumber}</span>
+    </a>
+
+    <nav class="bar__nav" aria-label="Sections">
+      <ol>
+        {
+          navigation.map((section) => (
+            <li>
+              <a href={`#${section.id}`} data-nav-link={section.id}>
+                <span class="bar__num">{section.number}</span>
+                {section.nav}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="bar__actions">
+      <a class="button button--quiet" href={`mailto:${email}`}>
+        <Icon name="mail" />
+        Email
+      </a>
+      {
+        cv ? (
+          <a class="button" href={cv} download>
+            <Icon name="download" />
+            CV (PDF)
+          </a>
+        ) : (
+          <button class="button" type="button" data-print title="Opens the print dialog: choose Save as PDF">
+            <Icon name="download" />
+            CV (PDF)
+          </button>
+        )
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mark the section in view, so the bar doubles as a "you are here".
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')].map((link) => [
+      link.dataset.navLink,
+      link,
+    ]),
+  );
+  const targets = [...links.keys()]
+    .map((id) => (id ? document.getElementById(id) : null))
+    .filter((el): el is HTMLElement => el !== null);
+
+  // Watch each heading's whole section, not just the heading line.
+  const sectionIds = new Map<Element, string>(
+    targets.map((heading) => [heading.closest('section') ?? heading, heading.id]),
+  );
+  const visible = new Set<string>();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const id = sectionIds.get(entry.target);
+        if (!id) continue;
+        if (entry.isIntersecting) visible.add(id);
+        else visible.delete(id);
+      }
+      const current = targets.find((el) => visible.has(el.id))?.id;
+      for (const [id, link] of links) {
+        if (id === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+    },
+    { rootMargin: '-15% 0px -70% 0px' },
+  );
+  for (const section of sectionIds.keys()) observer.observe(section);
+</script>
+
+<style>
+  .bar {
+    --nav-row: 2.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--paper);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .bar__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: 'mark nav actions';
+    align-items: center;
+    gap: var(--space-5);
+    min-height: var(--bar-height);
+  }
+
+  .bar__mark {
+    grid-area: mark;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .bar__mark:hover {
+    color: var(--ink);
+  }
+
+  .monogram {
+    display: grid;
+    place-items: center;
+    flex: none;
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.3rem;
+    background: var(--red);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    font-stretch: var(--stretch-expanded);
+    letter-spacing: 0.02em;
+  }
+
+  .bar__name {
+    font-weight: 650;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bar__part {
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  .bar__nav {
+    grid-area: nav;
+    justify-self: center;
+  }
+
+  .bar__nav ol {
+    display: flex;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+
+  .bar__nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4em;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--step--1);
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .bar__nav a:hover,
+  .bar__nav a[aria-current] {
+    color: var(--ink);
+  }
+
+  .bar__nav a[aria-current]::after {
+    content: '';
+    position: absolute;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: 0;
+    height: 2px;
+    background: var(--red);
+  }
+
+  .bar__num {
+    font-size: var(--step--2);
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar__actions {
+    grid-area: actions;
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  /* Tablets and phones: the section links ride above and scroll away; the rest stays. */
+  @media (max-width: 68rem) {
+    .bar {
+      top: calc(-1 * var(--nav-row));
+    }
+
+    .bar__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        'nav nav'
+        'mark actions';
+      gap: 0 var(--space-4);
+      padding-bottom: var(--space-2);
+    }
+
+    .bar__nav {
+      justify-self: stretch;
+      height: var(--nav-row);
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      border-bottom: var(--line);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .bar__nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .bar__nav ol {
+      height: 100%;
+      align-items: center;
+    }
+
+    .bar__nav a {
+      padding-inline: var(--space-2);
+    }
+
+    .bar__nav li:first-child a {
+      padding-left: 0;
+    }
+
+    .bar__nav a[aria-current]::after {
+      left: var(--space-2);
+      right: var(--space-2);
+    }
+
+    .bar__mark {
+      padding-top: var(--space-2);
+    }
+
+    .bar__actions {
+      padding-top: var(--space-2);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .bar__part {
+      display: none;
+    }
+
+    .bar__actions .button {
+      padding-inline: 0.7rem;
+    }
+  }
+</style>

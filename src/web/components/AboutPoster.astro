@@ -1,0 +1,230 @@
+---
+import { Picture } from 'astro:assets';
+import Value from '../../components/Value.astro';
+import { photo, photoHint } from '../../data/photo';
+import { profile } from '../../data/profile';
+import { projects } from '../../data/projects';
+import { resolve } from '../../lib/placeholder';
+import Poster from './Poster.astro';
+
+/** The presenter's own poster: who they are, where they study, when they can start, and how they got here. */
+const { availability } = profile;
+const name = resolve(profile.name);
+
+type TimelineEntry = { when: string; what: string; href?: string };
+
+const timeline: TimelineEntry[] = [
+  { when: profile.started, what: `Started the ${profile.programme} at UNITEN` },
+  ...[...projects]
+    .reverse()
+    .map((project) => ({ when: project.dates, what: `${project.datesLabel} ${project.name}`, href: `#${project.id}` })),
+  { when: resolve(profile.expectedGraduation), what: 'Graduating (expected)' },
+  { when: availability.fullTimeFrom, what: 'Free to start full-time' },
+];
+---
+
+<Poster id="about" class="poster--lead" pins={[7, 93]}>
+  <div class="about-head">
+    {
+      photo ? (
+        <Picture
+          src={photo}
+          formats={['avif', 'webp']}
+          widths={[240, 480, 720]}
+          sizes="(min-width: 46rem) 13rem, 9rem"
+          alt={`${name}`}
+          class="about-head__photo"
+        />
+      ) : (
+        <span class="about-head__photo about-head__photo--empty tbd" title={`TBD: ${photoHint}`}>
+          <span>Photo</span>
+        </span>
+      )
+    }
+    <div class="about-head__text">
+      <h2 class="poster-title" id="about-title">About me</h2>
+      <p class="about-head__summary">{profile.summary}</p>
+    </div>
+  </div>
+
+  <div class="about-body">
+    <section aria-labelledby="about-background">
+      <h3 class="band" id="about-background">Background</h3>
+      <dl class="facts">
+        <div>
+          <dt>Studying</dt>
+          <dd>{profile.programme}, <Value field={profile.institution} /></dd>
+        </div>
+        <div>
+          <dt>Dates</dt>
+          <dd>{profile.started} to <Value field={profile.expectedGraduation} /> (expected)</dd>
+        </div>
+        <div>
+          <dt>Based in</dt>
+          <dd><Value field={profile.location} /></dd>
+        </div>
+        <div>
+          <dt>Languages</dt>
+          <dd><Value field={profile.languages} /></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="about-availability">
+      <h3 class="band" id="about-availability">Availability</h3>
+      <dl class="facts">
+        <div>
+          <dt>Internship</dt>
+          <dd>From <Value field={availability.internshipFrom} />, for <Value field={availability.internshipLength} /></dd>
+        </div>
+        <div>
+          <dt>Full-time</dt>
+          <dd>From <Value field={availability.fullTimeFrom} /></dd>
+        </div>
+        <div>
+          <dt>Open to</dt>
+          <dd><Value field={availability.arrangements} /></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="about-roles">
+      <h3 class="band" id="about-roles">Looking for</h3>
+      <ul class="bullets">
+        {profile.roles.map((role) => <li>{role}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="about-interests">
+      <h3 class="band" id="about-interests">Outside coursework</h3>
+      <ul class="bullets">
+        {profile.interests.map((interest) => <li>{interest}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="about-timeline">
+      <h3 class="band" id="about-timeline">Timeline</h3>
+      <ol class="timeline">
+        {
+          timeline.map((entry) => (
+            <li>
+              <span class="timeline__when">{entry.when}</span>
+              <span class="timeline__what">{entry.href ? <a href={entry.href}>{entry.what}</a> : entry.what}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+  </div>
+</Poster>
+
+<style>
+  .about-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-5);
+  }
+
+  .about-head__photo {
+    width: 13rem;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+  }
+
+  .about-head__photo--empty {
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+    border: 2px dashed var(--ink-3);
+    background: var(--sheet-tint);
+    color: var(--ink-2);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+
+
+  .about-head__summary {
+    margin-top: var(--space-4);
+    max-width: 52ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .facts {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .facts > div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .facts dt {
+    font-weight: 700;
+  }
+
+  .facts dd {
+    color: var(--ink-2);
+  }
+
+  .timeline {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .timeline li {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .timeline__when {
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timeline__what {
+    font-weight: 700;
+  }
+
+  /* Two balanced columns once the poster has the width for them. */
+  @container (min-width: 46rem) {
+    .about-body {
+      columns: 2;
+      column-gap: var(--space-7);
+    }
+
+    .about-body > section {
+      break-inside: avoid;
+      padding-top: var(--space-5);
+    }
+
+    .about-body .band {
+      margin: 0 0 var(--space-4);
+      padding-inline: var(--space-4);
+    }
+  }
+
+  @container (max-width: 34rem) {
+    .about-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about-head__photo {
+      width: 9rem;
+    }
+
+    .facts > div,
+    .timeline li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+</style>

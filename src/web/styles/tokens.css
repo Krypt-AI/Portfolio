@@ -1,0 +1,77 @@
+/*
+ * Design tokens for the website. The world is a university project exhibition: white poster
+ * sheets pinned to a light grey felt wall, black ink, red push pins, and one band colour per
+ * poster. Light only: the page is read in daylight offices, on laptops and phones.
+ */
+:root {
+  color-scheme: light;
+
+  /* The wall */
+  --felt: #d5d9df;
+
+  /* The sheets */
+  --sheet: #ffffff;
+  --sheet-tint: #f3f5f8; /* insets on a poster: the working behind a readout, code */
+  --ink: #111418;
+  --ink-2: #3c434c; /* secondary text; 7:1 even on felt */
+  --ink-3: #59616b; /* captions on the sheet (6.3:1) and its tint (5.7:1); never on felt */
+  --rule: #d9dde3;
+
+  /* The exhibitor banner */
+  --banner: #111418;
+  --banner-raised: #2a3038; /* the empty photo frame */
+  --on-banner: #ffffff;
+  --on-banner-muted: #b8c0ca; /* 9.8:1 on the banner */
+  --status-live: #4ade80; /* the dot beside "Available", never without its words */
+
+  /* Pins and the primary action */
+  --pin: #e63946;
+  --pin-deep: #a8222f;
+  --pin-on-dark: #ff8a93; /* the TBD underline on the banner and the closing desk */
+  --action: #c8283a; /* white text 5.5:1 */
+  --action-deep: #a51f30;
+
+  /* One band per poster; white text on each is at least 5.4:1 */
+  --band-specify: #1d4ed8;
+  --band-study-hub: #0f766e;
+  --band-rwby-afterlight: #c41e3a;
+  --band-presenter: #111418;
+
+  /* Type: a condensed display for titles, a legibility-first text face, its mono for code */
+  --font-display: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
+  --font-text: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono Variable', ui-monospace, Consolas, monospace;
+
+  --step--1: 0.9375rem; /* captions, notes; the smallest size on the page */
+  --step-0: 1.0625rem; /* body */
+  --step-1: 1.25rem; /* taglines, lead lines */
+  --step-band: 1.375rem; /* band headings */
+  --step-value: clamp(2.25rem, 1.9rem + 1vw, 2.875rem); /* measured readouts */
+  --step-title: clamp(2.25rem, 1.4rem + 2.2vw, 3.75rem); /* poster titles */
+  --step-title-lead: clamp(3rem, 1.6rem + 4.4vw, 6rem); /* the lead poster and the closing desk */
+  --step-name: clamp(2.5rem, 1.6rem + 2.8vw, 4rem); /* the presenter's name */
+  --step-address: clamp(2rem, 1.2rem + 3.4vw, 4rem); /* the email address at the close */
+
+  /* Sheets stay square; controls and photos take one small corner */
+  --radius: 3px;
+
+  /* Space: one rhythm for the whole wall */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --gutter: clamp(1rem, 3vw, 2.5rem);
+  --wall-gap: clamp(1.25rem, 2.4vw, 2.5rem);
+  --wall-width: 100rem;
+  --measure: 66ch;
+  --nav-height: 3.25rem;
+
+  /* Paper lifts off felt only as far as a pinned sheet does */
+  --sheet-shadow: 0 1px 2px rgb(17 20 24 / 0.14), 0 14px 28px -18px rgb(17 20 24 / 0.45);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

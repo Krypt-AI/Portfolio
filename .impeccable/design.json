@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T00:01:53.833Z",
+  "title": "Design System: Portfolio (The Poster Session)",
+  "extensions": {
+    "colorMeta": {
+      "felt": {
+        "role": "neutral",
+        "displayName": "Felt",
+        "canonical": "oklch(88.4% 0.009 258.3)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3d4045",
+          "#5a5e63",
+          "#7d8086",
+          "#9ea2a7",
+          "#c4c8cd",
+          "#ebeff5"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a1a1a1",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "sheet-tint": {
+        "role": "neutral",
+        "displayName": "Sheet Tint",
+        "canonical": "oklch(96.9% 0.005 258.3)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7e8083",
+          "#a0a2a4",
+          "#c5c7ca",
+          "#edeff1"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(19.0% 0.009 255.6)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3c4045",
+          "#5a5e63",
+          "#7d8186",
+          "#9ea2a7",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Two",
+        "canonical": "oklch(38.0% 0.018 254.7)",
+        "tonalRamp": [
+          "#060c13",
+          "#1e252d",
+          "#394049",
+          "#575e68",
+          "#79818b",
+          "#9aa2ad",
+          "#c0c8d3",
+          "#e7effb"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink Three",
+        "canonical": "oklch(48.9% 0.019 254.0)",
+        "tonalRamp": [
+          "#060c13",
+          "#1e252d",
+          "#39404a",
+          "#565e68",
+          "#79818c",
+          "#9aa2ad",
+          "#bfc8d4",
+          "#e6effb"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "oklch(89.6% 0.009 258.3)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3d4045",
+          "#5a5e63",
+          "#7d8086",
+          "#9ea2a7",
+          "#c4c8cd",
+          "#ebeff5"
+        ]
+      },
+      "banner": {
+        "role": "neutral",
+        "displayName": "Banner Ink",
+        "canonical": "oklch(19.0% 0.009 255.6)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3c4045",
+          "#5a5e63",
+          "#7d8186",
+          "#9ea2a7",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "banner-raised": {
+        "role": "neutral",
+        "displayName": "Banner Raised",
+        "canonical": "oklch(30.7% 0.017 255.6)",
+        "tonalRamp": [
+          "#070b12",
+          "#1f242c",
+          "#3a4049",
+          "#585e67",
+          "#7a818a",
+          "#9ba2ac",
+          "#c0c8d2",
+          "#e7effa"
+        ]
+      },
+      "on-banner": {
+        "role": "neutral",
+        "displayName": "On Banner",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a1a1a1",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "on-banner-muted": {
+        "role": "neutral",
+        "displayName": "On Banner Muted",
+        "canonical": "oklch(80.5% 0.017 253.9)",
+        "tonalRamp": [
+          "#070c12",
+          "#1f252c",
+          "#3a4049",
+          "#575e67",
+          "#7a818a",
+          "#9ba2ac",
+          "#c0c8d2",
+          "#e7effa"
+        ]
+      },
+      "status-live": {
+        "role": "tertiary",
+        "displayName": "Live Green",
+        "canonical": "oklch(80.0% 0.182 151.7)",
+        "tonalRamp": [
+          "#001004",
+          "#012d12",
+          "#004e23",
+          "#037137",
+          "#039a4d",
+          "#1ac064",
+          "#56e889",
+          "#c7ffd4"
+        ]
+      },
+      "pin": {
+        "role": "primary",
+        "displayName": "Push Pin Red",
+        "canonical": "oklch(61.2% 0.208 22.2)",
+        "tonalRamp": [
+          "#1f0002",
+          "#4b000a",
+          "#7c0117",
+          "#b00325",
+          "#e23442",
+          "#ff6a6c",
+          "#ffafac",
+          "#ffe9e7"
+        ]
+      },
+      "pin-deep": {
+        "role": "primary",
+        "displayName": "Pin Rim",
+        "canonical": "oklch(48.0% 0.169 21.8)",
+        "tonalRamp": [
+          "#1f0002",
+          "#4b000a",
+          "#7c0018",
+          "#a8222f",
+          "#d24c51",
+          "#f97071",
+          "#feb0ac",
+          "#ffe8e7"
+        ]
+      },
+      "pin-on-dark": {
+        "role": "primary",
+        "displayName": "Pin On Dark",
+        "canonical": "oklch(76.4% 0.142 16.1)",
+        "tonalRamp": [
+          "#1e0004",
+          "#4a0012",
+          "#790825",
+          "#9d3241",
+          "#c65763",
+          "#ec7983",
+          "#feafb2",
+          "#fee8e9"
+        ]
+      },
+      "action": {
+        "role": "primary",
+        "displayName": "Action Red",
+        "canonical": "oklch(54.5% 0.194 21.3)",
+        "tonalRamp": [
+          "#1e0002",
+          "#4a000b",
+          "#7b0119",
+          "#b00328",
+          "#dc3e4a",
+          "#ff6a6e",
+          "#ffafad",
+          "#fee9e7"
+        ]
+      },
+      "action-deep": {
+        "role": "primary",
+        "displayName": "Action Deep",
+        "canonical": "oklch(47.2% 0.168 20.5)",
+        "tonalRamp": [
+          "#1e0002",
+          "#4a000c",
+          "#7b011b",
+          "#a82232",
+          "#d24c54",
+          "#f97074",
+          "#ffafad",
+          "#ffe9e8"
+        ]
+      },
+      "band-specify": {
+        "role": "secondary",
+        "displayName": "Specify Blue",
+        "canonical": "oklch(48.8% 0.217 264.4)",
+        "tonalRamp": [
+          "#000035",
+          "#010078",
+          "#0222af",
+          "#1b4bd5",
+          "#3c73fe",
+          "#729efe",
+          "#acc7fe",
+          "#e7efff"
+        ]
+      },
+      "band-study-hub": {
+        "role": "secondary",
+        "displayName": "Study Hub Teal",
+        "canonical": "oklch(51.1% 0.086 186.4)",
+        "tonalRamp": [
+          "#000f0d",
+          "#022b27",
+          "#024a45",
+          "#006d65",
+          "#369188",
+          "#5bb3aa",
+          "#82dad0",
+          "#b7fff6"
+        ]
+      },
+      "band-rwby-afterlight": {
+        "role": "secondary",
+        "displayName": "Afterlight Red",
+        "canonical": "oklch(53.1% 0.197 19.5)",
+        "tonalRamp": [
+          "#1f0003",
+          "#4a010e",
+          "#7b021d",
+          "#b0042e",
+          "#dd3b4e",
+          "#ff6972",
+          "#feafaf",
+          "#fee9e8"
+        ]
+      },
+      "band-presenter": {
+        "role": "secondary",
+        "displayName": "Presenter Ink",
+        "canonical": "oklch(19.0% 0.009 255.6)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3c4045",
+          "#5a5e63",
+          "#7d8186",
+          "#9ea2a7",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Lead poster titles and \"Let's talk\" at the contact desk."
+      },
+      "name": {
+        "displayName": "Name",
+        "purpose": "The presenter's name on the banner badge; the page h1."
+      },
+      "address": {
+        "displayName": "Address",
+        "purpose": "The email address at the contact desk."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Poster titles, coloured in the poster's band."
+      },
+      "readout-value": {
+        "displayName": "Readout Value",
+        "purpose": "Measured numbers in results readouts; capped at 11cqi with a 1.75rem floor."
+      },
+      "band": {
+        "displayName": "Band",
+        "purpose": "Section bands, uppercase."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Taglines, skill and certificate names, step titles."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The About summary and the contact desk lead."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, bullets and facts; 66ch measure."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Buttons and external links."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Captions, meta lines, readout working, nav links; the smallest step."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Commits, repository paths and evidence labels only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet-shadow",
+        "value": "0 1px 2px rgb(17 20 24 / 0.14), 0 14px 28px -18px rgb(17 20 24 / 0.45)",
+        "purpose": "Every poster sheet at rest on the felt."
+      },
+      {
+        "name": "pin-drop",
+        "value": "drop-shadow(1.5px 2.5px 1.5px rgb(17 20 24 / 0.32))",
+        "purpose": "Filter on every push pin, cast onto the sheet."
+      },
+      {
+        "name": "nav-over-wall",
+        "value": "0 6px 16px -10px rgb(17 20 24 / 0.6)",
+        "purpose": "The sticky section nav as it scrolls over the wall."
+      },
+      {
+        "name": "screenshot-contact",
+        "value": "0 1px 2px rgb(17 20 24 / 0.08)",
+        "purpose": "Screenshot frames on a sheet."
+      },
+      {
+        "name": "settle-from",
+        "value": "0 1px 2px rgb(17 20 24 / 0.1), 0 30px 40px -22px rgb(17 20 24 / 0.5)",
+        "purpose": "Start frame of the poster-settle animation only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing curve."
+      },
+      {
+        "name": "state",
+        "value": "160ms",
+        "purpose": "Hover and current-state colour, border and underline changes."
+      },
+      {
+        "name": "poster-settle",
+        "value": "620ms ease-out; from translateY(-14px) rotate(-0.5deg); stagger 90ms per poster",
+        "purpose": "Each poster settles once as it first enters view (IntersectionObserver, threshold 0.08). Never under reduced motion."
+      },
+      {
+        "name": "pin-press",
+        "value": "360ms ease-out, 300ms after its poster; from scale 1.45",
+        "purpose": "The pin presses into the settled sheet."
+      },
+      {
+        "name": "readout-open",
+        "value": "280ms ease-out on ::details-content block-size",
+        "purpose": "A readout opening to show its working; reduced motion skips it."
+      },
+      {
+        "name": "toggle-plus",
+        "value": "200ms ease-out",
+        "purpose": "The plus turning into a minus on a readout toggle."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wall two-up (media, max-width)",
+        "value": "75rem"
+      },
+      {
+        "name": "wall one-up and nav fades (media, max-width)",
+        "value": "46rem"
+      },
+      {
+        "name": "banner compact (media, max-width)",
+        "value": "40rem"
+      },
+      {
+        "name": "project poster two columns (container, min-width)",
+        "value": "50rem"
+      },
+      {
+        "name": "About two columns (container, min-width)",
+        "value": "46rem"
+      },
+      {
+        "name": "Skills two columns (container, min-width)",
+        "value": "40rem"
+      },
+      {
+        "name": "About stacks (container, max-width)",
+        "value": "34rem"
+      },
+      {
+        "name": "readouts one column (container, max-width)",
+        "value": "17rem"
+      }
+    ],
+    "otherSurfaces": [
+      {
+        "name": "Printed CV (Component Datasheet)",
+        "route": "/cv",
+        "designFile": "src/cv/DESIGN.md",
+        "tokens": "src/cv/styles/tokens.css"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Poster Sheet",
+      "kind": "card",
+      "refersTo": "poster-sheet",
+      "description": "A white square sheet pinned to felt, carrying one band colour through its title, bands and bullets.",
+      "html": "<div class=\"ds-felt\"><article class=\"ds-poster\"><svg class=\"ds-pin ds-pin--l\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8.5\" fill=\"var(--pin)\" stroke=\"var(--pin-deep)\" stroke-width=\"1.5\"/><circle cx=\"12\" cy=\"12\" r=\"3.25\" fill=\"var(--pin-deep)\" opacity=\"0.55\"/></svg><svg class=\"ds-pin ds-pin--r\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8.5\" fill=\"var(--pin)\" stroke=\"var(--pin-deep)\" stroke-width=\"1.5\"/><circle cx=\"12\" cy=\"12\" r=\"3.25\" fill=\"var(--pin-deep)\" opacity=\"0.55\"/></svg><h2 class=\"ds-poster__title\">Specify</h2><p class=\"ds-poster__tagline\">An AI email assistant that never sends on its own.</p><h3 class=\"ds-band\">What I built</h3><ul class=\"ds-bullets\"><li>Sorts Gmail into four folders with AI-named labels.</li><li>Writes Gmail drafts; never sends.</li></ul></article></div>",
+      "css": ".ds-felt{background:var(--felt);padding:2rem;font-family:var(--font-text);color:var(--ink);font-size:1.0625rem;line-height:1.6}.ds-poster{--band:var(--band-specify);--pad:clamp(1.25rem,1.9vw,2rem);position:relative;max-width:30rem;padding:calc(var(--pad) + 1.25rem) var(--pad) var(--pad);background:var(--sheet);box-shadow:var(--sheet-shadow)}.ds-pin{position:absolute;top:.4rem;width:1.375rem;height:1.375rem;translate:-50% 0;filter:drop-shadow(1.5px 2.5px 1.5px rgb(17 20 24 / .32))}.ds-pin--l{left:7%}.ds-pin--r{left:93%}.ds-poster__title{margin:0;color:var(--band);font-family:var(--font-display);font-size:clamp(2.25rem,1.4rem + 2.2vw,3.75rem);font-weight:800;line-height:.92;letter-spacing:.005em}.ds-poster__tagline{margin:.75rem 0 0;max-width:30ch;font-size:1.25rem;font-weight:700;line-height:1.35}.ds-band{margin:2rem calc(-1 * var(--pad)) 1rem;padding:.35rem var(--pad) .3rem;background:var(--band);color:#fff;font-family:var(--font-display);font-size:1.375rem;font-weight:800;letter-spacing:.03em;line-height:1.2;text-transform:uppercase}.ds-bullets{display:grid;gap:.75rem;margin:0;padding:0;list-style:none}.ds-bullets li{position:relative;padding-left:1.5rem}.ds-bullets li::before{content:'';position:absolute;left:.15rem;top:.62em;width:.5rem;height:.5rem;background:var(--band)}"
+    },
+    {
+      "name": "Show Working Readout",
+      "kind": "custom",
+      "refersTo": "readout",
+      "description": "A measured number as a native details element that opens to show how, where and at which commit it was counted.",
+      "html": "<ul class=\"ds-readouts\"><li><details class=\"ds-readout\"><summary><span class=\"ds-readout__value\">21</span><span class=\"ds-readout__label\">workflow step types</span><span class=\"ds-readout__how\">Show working</span></summary><p class=\"ds-readout__working\">Counted from the workflow step registry at commit e537860.</p></details></li><li><details class=\"ds-readout\"><summary><span class=\"ds-readout__value\">4</span><span class=\"ds-readout__label\">Gmail folders</span><span class=\"ds-readout__how\">Show working</span></summary><p class=\"ds-readout__working\">Read from the classifier's folder list.</p></details></li></ul>",
+      "css": ".ds-readouts{--band:var(--band-specify);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:0;padding:0;list-style:none;font-family:var(--font-text);color:var(--ink)}.ds-readouts>li{display:flex}.ds-readout{display:flex;flex:1;flex-direction:column;border-top:3px solid var(--band);background:var(--sheet-tint)}.ds-readout summary{display:flex;flex:1;flex-direction:column;gap:.25rem;padding:.75rem 1rem;cursor:pointer;list-style:none}.ds-readout summary::-webkit-details-marker{display:none}.ds-readout__value{font-family:var(--font-display);font-size:clamp(2.25rem,1.9rem + 1vw,2.875rem);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.ds-readout__label{font-weight:700;line-height:1.35}.ds-readout__how{margin-top:auto;padding-top:.5rem;color:var(--ink-3);font-size:.9375rem;text-decoration:underline;text-decoration-color:var(--band);text-underline-offset:.2em}.ds-readout summary:hover .ds-readout__how,.ds-readout[open] .ds-readout__how{color:var(--ink)}.ds-readout summary:focus-visible{outline:3px solid var(--band-specify);outline-offset:-3px}.ds-readout__working{margin:0;padding:0 1rem 1rem;color:var(--ink-2);font-size:.9375rem;line-height:1.55}"
+    },
+    {
+      "name": "Action Button",
+      "kind": "button",
+      "refersTo": "button-action",
+      "description": "The red primary action: Email me.",
+      "html": "<button class=\"ds-btn-action\">Email me</button>",
+      "css": ".ds-btn-action{display:inline-flex;align-items:center;gap:.5em;min-height:2.75rem;padding:0 1.15rem;border:2px solid var(--action);border-radius:3px;background:var(--action);color:#fff;font-family:var(--font-text);font-size:1.0625rem;font-weight:700;line-height:1;transition:background-color 160ms var(--ease-out),border-color 160ms var(--ease-out);cursor:pointer}.ds-btn-action:hover{border-color:var(--action-deep);background:var(--action-deep)}.ds-btn-action:focus-visible{outline:3px solid var(--band-specify);outline-offset:3px}"
+    },
+    {
+      "name": "Sheet Button (on ink)",
+      "kind": "button",
+      "refersTo": "button-sheet",
+      "description": "The white button on the banner and contact desk: CV, Copy address.",
+      "html": "<div class=\"ds-ink\"><button class=\"ds-btn-sheet\">CV</button></div>",
+      "css": ".ds-ink{padding:1.5rem;background:var(--banner)}.ds-btn-sheet{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 1.15rem;border:2px solid var(--sheet);border-radius:3px;background:var(--sheet);color:var(--ink);font-family:var(--font-text);font-size:1.0625rem;font-weight:700;line-height:1;transition:background-color 160ms var(--ease-out),color 160ms var(--ease-out);cursor:pointer}.ds-btn-sheet:hover{background:transparent;color:var(--sheet)}.ds-btn-sheet:focus-visible{outline:3px solid var(--sheet);outline-offset:3px}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "The quiet ink-outlined button on a white sheet.",
+      "html": "<button class=\"ds-btn-outline\">Open the printable CV</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;min-height:2.75rem;padding:0 1.15rem;border:2px solid var(--ink);border-radius:3px;background:transparent;color:var(--ink);font-family:var(--font-text);font-size:1.0625rem;font-weight:700;line-height:1;transition:background-color 160ms var(--ease-out),color 160ms var(--ease-out);cursor:pointer}.ds-btn-outline:hover{background:var(--ink);color:var(--sheet)}.ds-btn-outline:focus-visible{outline:3px solid var(--band-specify);outline-offset:3px}"
+    },
+    {
+      "name": "Section Nav",
+      "kind": "nav",
+      "refersTo": "wall-nav-link",
+      "description": "The sticky ink strip of section links, each keyed by its poster band swatch.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" style=\"--swatch:var(--band-specify)\" aria-current=\"location\">Specify</a><a href=\"#\" style=\"--swatch:var(--band-study-hub)\">Study Hub</a><a href=\"#\" style=\"--swatch:var(--band-rwby-afterlight)\">RWBY Afterlight</a><a href=\"#\" style=\"--swatch:var(--action)\">Contact</a></nav>",
+      "css": ".ds-nav{display:flex;gap:.25rem;min-height:3.25rem;padding:0 1rem;background:var(--banner);border-top:1px solid rgb(255 255 255 / .14);font-family:var(--font-text)}.ds-nav a{position:relative;display:flex;align-items:center;gap:.55em;padding:0 .75rem;color:var(--on-banner-muted);font-size:.9375rem;font-weight:700;text-decoration:none;white-space:nowrap}.ds-nav a::before{content:'';width:.7rem;height:.7rem;border:2px solid var(--on-banner-muted);transition:background-color 160ms var(--ease-out),border-color 160ms var(--ease-out)}.ds-nav a:hover,.ds-nav a[aria-current]{color:var(--on-banner)}.ds-nav a:hover::before,.ds-nav a[aria-current]::before{border-color:var(--on-banner);background:var(--swatch)}.ds-nav a[aria-current]::after{content:'';position:absolute;left:.75rem;right:.75rem;bottom:0;height:3px;background:var(--on-banner)}.ds-nav a:focus-visible{outline:3px solid var(--sheet);outline-offset:-3px}"
+    },
+    {
+      "name": "Steps Figure",
+      "kind": "custom",
+      "refersTo": "step-station",
+      "description": "A process as numbered stations on one band-coloured line; the person's step fills with the band, a stop fills with action red.",
+      "html": "<ol class=\"ds-steps\"><li><span class=\"ds-step__num\">1</span><strong>Email arrives</strong></li><li class=\"ds-step--person\"><span class=\"ds-step__num\">2</span><strong>You approve the draft</strong></li><li class=\"ds-step--stop\"><span class=\"ds-step__num\">3</span><strong>Nothing is sent</strong></li></ol>",
+      "css": ".ds-steps{--band:var(--band-specify);display:grid;margin:0;padding:0;list-style:none;font-family:var(--font-text);color:var(--ink)}.ds-steps li{position:relative;display:grid;grid-template-columns:2.25rem 1fr;gap:.75rem;align-items:start;padding-bottom:1rem}.ds-steps li:not(:last-child)::before{content:'';position:absolute;left:calc(1.125rem - 1.5px);top:2.25rem;bottom:0;width:3px;background:var(--band)}.ds-steps strong{padding-top:.2rem;font-size:1.25rem;line-height:1.25}.ds-step__num{display:grid;place-items:center;width:2.25rem;height:2.25rem;border:3px solid var(--band);border-radius:50%;background:var(--sheet);font-family:var(--font-display);font-size:1.25rem;font-weight:800;line-height:1}.ds-step--person .ds-step__num{background:var(--band);color:#fff}.ds-step--person strong{color:var(--band)}.ds-step--stop .ds-step__num{border-color:var(--action);background:var(--action);color:#fff}"
+    },
+    {
+      "name": "TBD Marker",
+      "kind": "custom",
+      "refersTo": "tbd",
+      "description": "A value still to be supplied: dotted pin-red underline and a hint; production builds refuse to ship it.",
+      "html": "<p class=\"ds-tbd-host\">Available from <span class=\"ds-tbd\" title=\"TBD: internship start date\">June 2027</span></p>",
+      "css": ".ds-tbd-host{font-family:var(--font-text);font-size:1.0625rem;color:var(--ink)}.ds-tbd{text-decoration-line:underline;text-decoration-style:dotted;text-decoration-color:var(--pin);text-decoration-thickness:2px;text-underline-offset:.2em;cursor:help}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Poster Session",
+    "overview": "The website is a university project exhibition. Each public repository hangs as a white A0 poster pinned to a light grey felt wall, read top to bottom in one standing glance: why it exists, what was built, how it works, measured results, what is next. The presenter's ink banner heads the wall with their badge, availability and the two actions a recruiter came for; the presenter's own posters (About, Skills, Certificates, a CV handout) hang on a second row; an ink contact desk closes the wall.\n\nEach poster owns one band colour (Specify blue, Study Hub teal, RWBY red, ink for the presenter's posters). That colour runs through the poster's title, its section bands, bullets, readout rules, step stations, link colour and foot rule, so a poster reads as one object from across the room. Reading comfort beats density: 17px body text in a legibility-first face, short sections under plain banded headings, one idea per band. The system is light only (`color-scheme: light`); ink appears only at the ends of the wall.\n\nConfirmed rejections, from the owner's brand commitment: no dark hero, no gradient blob, no percentage skill bars, no grid of same-size cards. The wall is deliberately uneven: a 1.6-fraction lead poster beside two at one fraction, posters hanging at their natural heights.",
+    "keyCharacteristics": [
+      "Felt wall, white sheets, ink type, red push pins; one band colour per poster.",
+      "Big Shoulders lettering for titles, names, bands and measured values; Atkinson Hyperlegible Next for every sentence; its Mono only for commits, paths and counted values.",
+      "Section bands are the headings.",
+      "Every measured number shows its working on demand.",
+      "Motion happens once: each poster pins as the wall enters view, and never under reduced motion."
+    ],
+    "rules": [
+      {
+        "name": "The One Band Per Poster Rule",
+        "body": "A poster sets one band colour and uses it for its title, bands, bullets, readout rules, step stations, links and foot rule. No poster carries a second band colour; neutrals do the rest.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pin Is Not The Button Rule",
+        "body": "Push Pin Red (#e63946) draws pins and underlines only. Text-bearing red surfaces use Action Red (#c8283a), which is a separate token for contrast.",
+        "section": "colors"
+      },
+      {
+        "name": "The Felt Is For Sheets Rule",
+        "body": "Felt is the ground between posters, never a reading surface. Text that sits on felt uses Ink or Ink Two; Ink Three stays on sheets.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lettering Is For Distance Rule",
+        "body": "Big Shoulders sets only what is read from across the room: titles, the name, bands, measured values, the email address, step numbers. Sentences are never set in it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Is Evidence Rule",
+        "body": "Atkinson Hyperlegible Mono appears only for commits, paths and counted sources. It never sets a heading or a decoration.",
+        "section": "typography"
+      },
+      {
+        "name": "The Readable Floor Rule",
+        "body": "Body text is 1.0625rem (17px); nothing that carries meaning goes below the 0.9375rem caption step.",
+        "section": "typography"
+      },
+      {
+        "name": "The Pinned Sheet Rule",
+        "body": "Depth belongs to paper on felt. A sheet lifts as far as a pin holds it and no further; nothing on a sheet lifts off it, and shadows stay soft and ink-tinted.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do give every poster exactly one band colour and run it through title, bands, bullets, readout rules, stations, links and foot rule.",
+      "Do use section bands as the poster's headings: full-bleed in one column, inset in two.",
+      "Do make every measured number a \"show working\" readout that names how, where and at which commit it was counted.",
+      "Do place pins per poster in percent; give wide sheets two corner pins.",
+      "Do let container width, not viewport width, decide when a poster flows into two balanced columns.",
+      "Do keep body text at 1.0625rem and captions at 0.9375rem or larger.",
+      "Do keep Ink Three on white sheets; on felt use Ink or Ink Two.",
+      "Do mark unfinished values with the dotted red TBD underline and keep production builds refusing them.",
+      "Do keep motion to 160ms state changes and the one-time pinning, and skip it under reduced motion."
+    ],
+    "donts": [
+      "Don't build a dark hero, a gradient blob, percentage skill bars or a grid of same-size cards; the wall hangs uneven sheets at natural heights.",
+      "Don't put an ink section between posters; ink belongs to the banner, the nav and the contact desk at the ends of the wall.",
+      "Don't set eyebrow labels or kickers above poster titles; the band beneath the head does the locating.",
+      "Don't set sentences in Big Shoulders or headings in the mono.",
+      "Don't set text in Push Pin Red (#e63946); use Action Red (#c8283a) for red surfaces that carry text.",
+      "Don't round sheets, bands or readout cells; 3px corners are for buttons and photos only.",
+      "Don't lift anything off a sheet with a shadow, or use hard offset shadows; depth is paper on felt.",
+      "Don't use datasheet devices (Archivo, Fragment Mono, numbered sections, ruled tables, flags) on the website."
+    ]
+  }
+}

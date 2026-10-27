@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Standard portfolio sketch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1440px; height: 900px; overflow: hidden; background: #fff; font-family: "Segoe UI", Arial, sans-serif; color: #111827; }
+  nav { height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 96px; border-bottom: 1px solid #e5e7eb; }
+  nav b { font-size: 24px; } nav span { font-size: 16px; }
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 80px 96px 48px; align-items: center; }
+  h1 { font-size: 64px; line-height: 1.05; }
+  .hero p { font-size: 24px; color: #374151; margin-top: 20px; }
+  .cta { display: flex; gap: 14px; margin-top: 32px; }
+  .cta div { height: 56px; padding: 0 28px; display: grid; place-items: center; border-radius: 10px; font-size: 22px; font-weight: 600; border: 2px solid #2563eb; color: #2563eb; }
+  .cta div:first-child { background: #2563eb; color: #fff; }
+  .shot { height: 340px; border-radius: 16px; background: #e5e7eb; border: 1px solid #d1d5db; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 0 96px; }
+  .card { height: 200px; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; }
+  .card b { font-size: 26px; }
+</style>
+</head>
+<body>
+  <nav><b>Alif Hakimi</b><span>Projects · Skills · Contact</span></nav>
+  <div class="hero">
+    <div><h1>Full-stack and AI web developer</h1><p>Diploma in Computer Science student at UNITEN, available for an internship.</p>
+      <div class="cta"><div>Email me</div><div>Download CV</div></div></div>
+    <div class="shot"></div>
+  </div>
+  <div class="cards"><div class="card"><b>Specify</b></div><div class="card"><b>Study Hub</b></div><div class="card"><b>RWBY Afterlight</b></div></div>
+</body>
+</html>

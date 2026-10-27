@@ -1,0 +1,47 @@
+---
+import Icon from '../../components/Icon.astro';
+import { profile } from '../../data/profile';
+import Poster from './Poster.astro';
+
+/** The "take one" handout every exhibition stand has: here, the CV to keep. */
+const { cv } = profile.contact;
+---
+
+<Poster id="handout" pins={[56]}>
+  <h2 class="poster-title" id="handout-title">Take the CV</h2>
+  <p class="handout__lead">
+    The same work as an A4 datasheet: skills drawn as the pins of a chip, Specify as the typical application, and
+    every number checkable.
+  </p>
+  {
+    cv ? (
+      <a class="button button--outline handout__action" href={cv} download>
+        <Icon name="download" />
+        Download the CV (PDF)
+      </a>
+    ) : (
+      <>
+        <a class="button button--outline handout__action" href="/cv">
+          Open the printable CV
+        </a>
+        <p class="handout__note">To keep a copy, choose Save as PDF in your browser's print dialog.</p>
+      </>
+    )
+  }
+</Poster>
+
+<style>
+  .handout__lead {
+    margin-top: var(--space-4);
+  }
+
+  .handout__action {
+    margin-top: var(--space-5);
+  }
+
+  .handout__note {
+    margin-top: var(--space-3);
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+</style>

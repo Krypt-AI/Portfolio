@@ -1,0 +1,218 @@
+---
+import Icon from '../../components/Icon.astro';
+import type { Project } from '../../data/projects';
+import Poster from './Poster.astro';
+import QrCode from './QrCode.astro';
+import Readouts from './Readouts.astro';
+import ScreenshotFigure from './ScreenshotFigure.astro';
+import StepsFigure from './StepsFigure.astro';
+
+/**
+ * A project as an exhibition poster: why it exists, what was built, how it works, measured
+ * results and what is next, read top to bottom in one standing glance.
+ */
+interface Props {
+  project: Project;
+  /** The lead poster gets the largest title. */
+  lead?: boolean;
+  /** Where the full write-up lives, if anywhere. */
+  caseStudy?: { label: string; href: string };
+  /** Pin positions across the top edge, in percent. */
+  pins?: number[];
+}
+
+const { project, lead = false, caseStudy, pins } = Astro.props;
+---
+
+<Poster id={project.id} tone={project.id} class={lead ? 'poster--lead' : undefined} pins={pins}>
+  <header class="poster-head">
+    <h2 class="poster-title poster-head__title" id={`${project.id}-title`}>{project.name}</h2>
+    <p class="poster-head__tagline">{project.tagline}</p>
+    <p class="poster-head__meta">
+      {project.datesLabel} {project.dates}
+      <span class="poster-head__stack">
+        <span class="visually-hidden">Built with </span>{project.stack.join(' · ')}
+      </span>
+    </p>
+  </header>
+
+  <div class="poster-body">
+    <section class="poster-part" aria-labelledby={`${project.id}-why`}>
+      <h3 class="band" id={`${project.id}-why`}>Why it exists</h3>
+      <p>{project.why}</p>
+    </section>
+
+    <section class="poster-part" aria-labelledby={`${project.id}-built`}>
+      <h3 class="band" id={`${project.id}-built`}>What I built</h3>
+      <ul class="bullets">
+        {project.built.map((line) => <li>{line}</li>)}
+      </ul>
+    </section>
+
+    {
+      project.figures.map((figure) => (
+        <section class="poster-part" aria-labelledby={`${project.id}-${figure.kind}`}>
+          <h3 class="band" id={`${project.id}-${figure.kind}`}>
+            {figure.kind === 'steps' ? 'How it works' : 'In use'}
+          </h3>
+          {figure.kind === 'steps' ? (
+            <StepsFigure title={figure.title} steps={figure.steps} caption={figure.caption} />
+          ) : (
+            <ScreenshotFigure
+              image={figure.image}
+              alt={figure.alt}
+              caption={figure.caption}
+              note={figure.note}
+              sizes="(min-width: 75rem) 22vw, (min-width: 46rem) 44vw, 92vw"
+            />
+          )}
+        </section>
+      ))
+    }
+
+    <section class="poster-part" aria-labelledby={`${project.id}-results`}>
+      <h3 class="band" id={`${project.id}-results`}>Results</h3>
+      <Readouts results={project.results} commit={project.commit} />
+    </section>
+
+    {
+      project.safeguards && (
+        <section class="poster-part" aria-labelledby={`${project.id}-safeguards`}>
+          <h3 class="band" id={`${project.id}-safeguards`}>Safeguards</h3>
+          <ul class="bullets">
+            {project.safeguards.map((line) => <li>{line}</li>)}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="poster-part" aria-labelledby={`${project.id}-next`}>
+      <h3 class="band" id={`${project.id}-next`}>What's next</h3>
+      <p>{project.next}</p>
+    </section>
+  </div>
+
+  <footer class="poster-foot">
+    <ul class="poster-foot__links">
+      <li>
+        <a class="link-out" href={project.source.href} target="_blank" rel="noopener">
+          Source on GitHub<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+        <span class="poster-foot__where mono">{project.source.label}</span>
+      </li>
+      {
+        project.live && (
+          <li>
+            <a class="link-out" href={project.live.href} target="_blank" rel="noopener">
+              Live site<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+            <span class="poster-foot__where mono">{project.live.label}</span>
+          </li>
+        )
+      }
+      {
+        caseStudy && (
+          <li>
+            <a class="link-out" href={caseStudy.href}>
+              {caseStudy.label}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+    <div class="poster-foot__qr">
+      <QrCode url={project.source.href} />
+      <span>Scan for the repository</span>
+    </div>
+  </footer>
+</Poster>
+
+<style>
+  .poster-head__title {
+    color: var(--band);
+  }
+
+  /* The class sits on Poster's own element, outside this component's scope. */
+  :global(.poster--lead) .poster-head__title {
+    font-size: var(--step-title-lead);
+  }
+
+  .poster-head__tagline {
+    margin-top: var(--space-3);
+    max-width: 30ch;
+    font-size: var(--step-1);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .poster-head__meta {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-3);
+    color: var(--ink-2);
+    font-size: var(--step--1);
+  }
+
+  .poster-head__stack {
+    color: var(--ink-3);
+  }
+
+  .poster-part p {
+    max-width: var(--measure);
+  }
+
+  .poster-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 3px solid var(--band);
+  }
+
+  .poster-foot__links {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .poster-foot__links .link-out {
+    color: var(--band);
+  }
+
+  .poster-foot__where {
+    display: block;
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+
+  .poster-foot__qr {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    color: var(--ink-3);
+    font-size: var(--step--1);
+    text-align: center;
+  }
+
+  /* A poster given a wide stretch of wall reads in two balanced columns, in the same order. */
+  @container (min-width: 50rem) {
+    .poster-body {
+      columns: 2;
+      column-gap: var(--space-7);
+    }
+
+    .poster-part {
+      break-inside: avoid;
+      padding-top: var(--space-5);
+    }
+
+    .poster-body .band {
+      margin: 0 0 var(--space-4);
+      padding-inline: var(--space-4);
+    }
+  }
+</style>

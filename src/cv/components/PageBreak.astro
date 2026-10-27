@@ -1,0 +1,67 @@
+---
+import { doc } from '../data/document';
+import { profile } from '../../data/profile';
+import { resolve } from '../../lib/placeholder';
+import RunningHead from './RunningHead.astro';
+import Value from '../../components/Value.astro';
+
+/**
+ * The seam between two datasheet pages: the footer of page `after`, the grey gap,
+ * then the running head of the next page.
+ */
+interface Props {
+  after: number;
+}
+
+const { after } = Astro.props;
+const feedback = `mailto:${resolve(profile.contact.email)}?subject=${encodeURIComponent('About your portfolio')}`;
+---
+
+<div class="page-break">
+  <div class="page-break__foot sheet">
+    <span>Copyright © {doc.year}, <Value field={profile.name} /></span>
+    <a href={feedback}>Submit document feedback</a>
+    <span class="mono page-break__number">{after}</span>
+  </div>
+  <div class="page-break__gap" aria-hidden="true"></div>
+  <div class="sheet">
+    <RunningHead />
+  </div>
+</div>
+
+<style>
+  .page-break {
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  .page-break__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    padding-block: var(--space-3);
+  }
+
+  .page-break__foot a {
+    color: var(--ink-2);
+  }
+
+  .page-break__number {
+    color: var(--ink);
+  }
+
+  .page-break__gap {
+    height: var(--space-6);
+    background: var(--paper-sunk);
+    border-block: var(--line);
+  }
+
+  @media (max-width: 40rem) {
+    .page-break__foot a {
+      order: 3;
+      flex-basis: 100%;
+    }
+  }
+</style>

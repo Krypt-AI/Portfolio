@@ -1,0 +1,270 @@
+---
+/**
+ * A one-series horizontal bar chart in the datasheet's "typical characteristics" style.
+ * Bars are instrument grey; the one bar the caption is about is red and carries its
+ * value. Every value is in the hover readout and in the data table underneath.
+ */
+interface Datum {
+  label: string;
+  value: number;
+}
+
+interface Props {
+  data: Datum[];
+  /** Plural unit for values, e.g. "lines". */
+  unit: string;
+  /** Axis ticks from zero; the last one is the axis maximum. */
+  ticks: number[];
+  /** The label of the bar the story is about. */
+  emphasis?: string;
+  /** Column headings for the data table. */
+  columns: [string, string];
+}
+
+const { data, unit, ticks, emphasis, columns } = Astro.props;
+const max = ticks[ticks.length - 1] ?? Math.max(...data.map((d) => d.value));
+const format = (value: number) => value.toLocaleString('en-US');
+const percent = (value: number) => `${((value / max) * 100).toFixed(2)}%`;
+---
+
+<div class="chart" data-chart style={`--intervals: ${ticks.length - 1}`}>
+  <ul class="chart__rows">
+    {
+      data.map((datum) => (
+        <li
+          class:list={['chart__row', { 'is-emphasis': datum.label === emphasis }]}
+          tabindex="0"
+          aria-label={`${datum.label}: ${format(datum.value)} ${unit}`}
+          data-label={datum.label}
+          data-value={`${format(datum.value)} ${unit}`}
+        >
+          <span class="chart__label" aria-hidden="true">
+            {datum.label}
+          </span>
+          <span class="chart__track" aria-hidden="true" style={`--w: ${percent(datum.value)}`}>
+            <span class="chart__bar" />
+            {datum.label === emphasis && <span class="chart__value">{format(datum.value)}</span>}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="chart__axis" aria-hidden="true">
+    {ticks.map((tick) => <span style={`--x: ${percent(tick)}`}>{format(tick)}</span>)}
+  </div>
+  <div class="chart__tip" aria-hidden="true" hidden>
+    <strong data-tip-value></strong>
+    <span data-tip-label></span>
+  </div>
+  <details class="chart__data">
+    <summary>Data table</summary>
+    <table class="dt">
+      <thead>
+        <tr>
+          <th scope="col">{columns[0]}</th>
+          <th scope="col" class="num">{columns[1]}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          data.map((datum) => (
+            <tr>
+              <th scope="row">{datum.label}</th>
+              <td class="num value">{format(datum.value)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </details>
+</div>
+
+<script>
+  // Hover and focus readout: value first, then the label.
+  for (const chart of document.querySelectorAll<HTMLElement>('[data-chart]')) {
+    const tip = chart.querySelector<HTMLElement>('.chart__tip');
+    const tipValue = chart.querySelector<HTMLElement>('[data-tip-value]');
+    const tipLabel = chart.querySelector<HTMLElement>('[data-tip-label]');
+    if (!tip || !tipValue || !tipLabel) continue;
+
+    const show = (row: HTMLElement) => {
+      const bar = row.querySelector<HTMLElement>('.chart__bar');
+      if (!bar) return;
+      tipValue.textContent = row.dataset.value ?? '';
+      tipLabel.textContent = row.dataset.label ?? '';
+      tip.hidden = false;
+      const chartBox = chart.getBoundingClientRect();
+      const barBox = bar.getBoundingClientRect();
+      const left = Math.min(barBox.right - chartBox.left + 10, chart.clientWidth - tip.offsetWidth);
+      tip.style.left = `${Math.max(0, left)}px`;
+      tip.style.top = `${barBox.top - chartBox.top + barBox.height / 2 - tip.offsetHeight / 2}px`;
+    };
+    const hide = () => {
+      tip.hidden = true;
+    };
+
+    for (const row of chart.querySelectorAll<HTMLElement>('.chart__row')) {
+      row.addEventListener('pointerenter', () => show(row));
+      row.addEventListener('focus', () => show(row));
+      row.addEventListener('pointerleave', hide);
+      row.addEventListener('blur', hide);
+    }
+  }
+</script>
+
+<style>
+  .chart {
+    --label-width: 8.5rem;
+    --bar-thickness: 0.875rem;
+    position: relative;
+    font-size: var(--step--1);
+  }
+
+  .chart__rows {
+    padding: 0;
+    list-style: none;
+  }
+
+  .chart__row {
+    display: grid;
+    grid-template-columns: var(--label-width) minmax(0, 1fr);
+    align-items: center;
+    min-height: 1.875rem;
+    outline: none;
+  }
+
+  .chart__label {
+    padding-right: var(--space-3);
+    color: var(--ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chart__track {
+    position: relative;
+    align-self: stretch;
+    border-left: 1px solid var(--ink);
+    /* Hairline gridlines at every tick. */
+    background-image: linear-gradient(to right, transparent calc(100% - 1px), var(--rule) calc(100% - 1px));
+    background-size: calc(100% / var(--intervals)) 100%;
+  }
+
+  .chart__bar {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: var(--w);
+    height: var(--bar-thickness);
+    translate: 0 -50%;
+    border-radius: 0 4px 4px 0;
+    background: var(--instrument);
+    transition: background-color 140ms var(--ease-out);
+  }
+
+  .is-emphasis .chart__bar {
+    background: var(--red);
+  }
+
+  .chart__value {
+    position: absolute;
+    left: calc(var(--w) + 0.5rem);
+    top: 50%;
+    translate: 0 -50%;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--ink);
+  }
+
+  .chart__row:hover .chart__bar,
+  .chart__row:focus-visible .chart__bar {
+    background: var(--ink-2);
+  }
+
+  .is-emphasis:hover .chart__bar,
+  .is-emphasis:focus-visible .chart__bar {
+    background: var(--red-deep);
+  }
+
+  .chart__row:focus-visible .chart__label {
+    color: var(--ink);
+    text-decoration: underline 2px var(--red);
+    text-underline-offset: 0.2em;
+  }
+
+  .chart__axis {
+    position: relative;
+    height: 1.5rem;
+    margin-left: var(--label-width);
+    border-top: 1px solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-3);
+  }
+
+  .chart__axis span {
+    position: absolute;
+    left: var(--x);
+    top: 0.2rem;
+    translate: -50% 0;
+  }
+
+  .chart__axis span:first-child {
+    translate: 0 0;
+  }
+
+  .chart__axis span:last-child {
+    translate: -100% 0;
+  }
+
+  .chart__tip {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-1) var(--space-3);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: var(--step--2);
+    line-height: 1.35;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgb(21 21 21 / 0.18);
+  }
+
+  .chart__tip[hidden] {
+    display: none;
+  }
+
+  .chart__tip strong {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 400;
+  }
+
+  .chart__tip span {
+    color: var(--on-ink-muted);
+  }
+
+  .chart__data {
+    margin-top: var(--space-3);
+  }
+
+  .chart__data summary {
+    width: fit-content;
+    cursor: pointer;
+    font-size: var(--step--2);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .chart__data table {
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 30rem) {
+    .chart {
+      --label-width: 7rem;
+    }
+  }
+</style>

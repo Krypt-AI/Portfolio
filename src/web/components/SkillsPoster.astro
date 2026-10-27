@@ -1,0 +1,112 @@
+---
+import Icon from '../../components/Icon.astro';
+import { skills, type SkillType } from '../../data/skills';
+import Poster from './Poster.astro';
+
+/** Every skill with the public file that shows it, grouped the way a recruiter scans. */
+const groups: { type: SkillType; heading: string }[] = [
+  { type: 'LANG', heading: 'Languages' },
+  { type: 'UI', heading: 'Frontend' },
+  { type: 'AI', heading: 'AI' },
+  { type: 'DATA', heading: 'Backend and data' },
+  { type: 'PRAC', heading: 'Practice' },
+];
+---
+
+<Poster id="skills" pins={[6, 94]}>
+  <h2 class="poster-title" id="skills-title">Skills</h2>
+  <p class="skills__intro">Each one links to a public file that shows it.</p>
+
+  <div class="skills__groups">
+    {
+      groups.map((group) => (
+        <section aria-labelledby={`skills-${group.type.toLowerCase()}`}>
+          <h3 class="band" id={`skills-${group.type.toLowerCase()}`}>
+            {group.heading}
+          </h3>
+          <ul class="skill-list">
+            {skills
+              .filter((skill) => skill.type === group.type)
+              .map((skill) => (
+                <li>
+                  <strong class="skill-list__name">{skill.name}</strong>
+                  <span class="skill-list__what">{skill.description}</span>
+                  <a class="skill-list__proof" href={skill.evidence.href} title={skill.evidence.path} target="_blank" rel="noopener">
+                    {skill.evidence.project} · <span class="mono">{skill.evidence.label}</span>
+                    <Icon name="external" />
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Poster>
+
+<style>
+  .skills__intro {
+    margin-top: var(--space-3);
+    font-size: var(--step-1);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  @container (min-width: 40rem) {
+    .skills__groups {
+      columns: 2;
+      column-gap: var(--space-7);
+    }
+
+    .skills__groups > section {
+      break-inside: avoid;
+      padding-top: var(--space-5);
+    }
+
+    .skills__groups .band {
+      margin: 0 0 var(--space-4);
+      padding-inline: var(--space-4);
+    }
+  }
+
+  .skill-list {
+    display: grid;
+    gap: var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .skill-list li {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .skill-list__name {
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+
+  .skill-list__what {
+    color: var(--ink-2);
+  }
+
+  .skill-list__proof {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3em;
+    justify-self: start;
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+
+  .skill-list__proof:hover {
+    color: var(--ink);
+  }
+
+  .skill-list__proof :global(svg) {
+    width: 0.85em;
+    height: 0.85em;
+  }
+</style>

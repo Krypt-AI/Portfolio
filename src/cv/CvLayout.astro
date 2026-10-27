@@ -1,0 +1,39 @@
+---
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/fragment-mono/400.css';
+import './styles/tokens.css';
+import './styles/base.css';
+import './styles/datasheet.css';
+import './styles/print.css';
+import Base from '../layouts/Base.astro';
+
+/** The printed CV's shell: the datasheet's type, tokens and print stylesheet. */
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Base title={title} description={description} themeColor="#fbfbfa">
+  <slot />
+
+  <script>
+    // Until a CV file is added, every CV button saves this page as a PDF through print.
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-print]')) {
+      button.addEventListener('click', () => window.print());
+    }
+
+    // Tables that restack on phones keep their table semantics for screen readers,
+    // which some browsers drop once table parts stop displaying as table parts.
+    for (const table of document.querySelectorAll('table.dt--stack')) {
+      table.setAttribute('role', 'table');
+      for (const group of table.querySelectorAll('thead, tbody')) group.setAttribute('role', 'rowgroup');
+      for (const row of table.querySelectorAll('tr')) row.setAttribute('role', 'row');
+      for (const head of table.querySelectorAll('thead th')) head.setAttribute('role', 'columnheader');
+      for (const head of table.querySelectorAll('tbody th')) head.setAttribute('role', 'rowheader');
+      for (const cell of table.querySelectorAll('td')) cell.setAttribute('role', 'cell');
+    }
+  </script>
+</Base>

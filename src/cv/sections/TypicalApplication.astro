@@ -1,0 +1,495 @@
+---
+import BlockDiagram from '../components/BlockDiagram.astro';
+import Icon from '../../components/Icon.astro';
+import PageBreak from '../components/PageBreak.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { projects } from '../../data/projects';
+import {
+  application,
+  designRequirements,
+  errata,
+  functionalModes,
+  groundingListing,
+  groundingRules,
+  isolationLayers,
+  pipeline,
+  promptListing,
+  repositoryLayout,
+} from '../data/application';
+import { figure, sections, table } from '../data/document';
+
+/** Section 6: Specify as the typical application, then the other public projects. Spans four datasheet pages. */
+interface Props {
+  /** The page number this section starts on. */
+  firstPage: number;
+}
+
+const { firstPage } = Astro.props;
+
+const others = projects.filter((project) => project.id !== 'specify');
+const pathWidth = Math.max(...repositoryLayout.map((entry) => entry.path.length)) + 2;
+const isComment = (line: string) => /^\s*(--|#|""")/.test(line);
+---
+
+<section class="application" aria-labelledby={sections.application.id}>
+  <div class="page sheet">
+    <SectionHeading section={sections.application} />
+
+    <div class="intro">
+      <p class="lead">{application.summary}</p>
+      <dl class="facts">
+        <div>
+          <dt>Source</dt>
+          <dd>
+            <a href={application.links.source.href} target="_blank" rel="noopener">
+              {application.links.source.label}<Icon name="external" /><span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd>{application.published}, counted at <span class="mono">{application.commit}</span></dd>
+        </div>
+        <div>
+          <dt>Stack</dt>
+          <dd>{application.stack}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <SectionHeading level={3} number="6.1" title="Design Requirements" id="requirements" />
+    <p class="prose">
+      Specify works on a real inbox, so it had to be safe with one first. These were the constraints, and where the
+      design meets each one.
+    </p>
+    <div class="table-wrap spaced">
+      <table class="dt dt--stack">
+        <caption><span class="caption__label">Table {table.requirements}.</span>Design Requirements</caption>
+        <thead>
+          <tr>
+            <th scope="col">Requirement</th>
+            <th scope="col">How the design meets it</th>
+            <th scope="col">See</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            designRequirements.map((row) => (
+              <tr>
+                <th scope="row">{row.requirement}</th>
+                <td data-label="Met by">{row.answer}</td>
+                <td data-label="See">
+                  <a href={row.ref.href}>{row.ref.label}</a>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <SectionHeading level={3} number="6.2" title="Functional Block Diagram" id="block-diagram" />
+    <BlockDiagram />
+  </div>
+
+  <PageBreak after={firstPage} />
+
+  <div class="page sheet">
+    <SectionHeading level={3} number="6.3" title="Feature Description" id="feature-description" />
+    <SectionHeading level={4} number="6.3.1" title="An email pipeline that asks before it guesses" id="pipeline" />
+    <div class="prose">
+      <p>
+        Every new email runs the same pipeline, one background task per email. Rules go first, the model sees only what
+        the rules could not decide, and anything it is unsure about goes to a person instead of a label.
+      </p>
+      <p>
+        Labels are not a fixed list. The model names one from the email's context and reuses an existing label when one
+        fits. Near-duplicates such as "Job Offer" and "Job Offers" merge at a name similarity of 0.88, but only when
+        their numbers agree, so CS301 and CS302 stay apart.
+      </p>
+    </div>
+    <div class="table-wrap spaced">
+      <table class="dt lifecycle">
+        <caption><span class="caption__label">Table {table.pipeline}.</span>The Life of One Email</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="num">Step</th>
+            <th scope="col">Stage</th>
+            <th scope="col">What happens</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            pipeline.map((row, index) => (
+              <tr>
+                <td class="num value">{index + 1}</td>
+                <th scope="row">{row.where}</th>
+                <td>{row.what}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <SectionHeading level={4} number="6.3.2" title="Grounded extraction" id="grounded-extraction" />
+    <p class="prose">
+      The model extracts; the code decides what to believe. A salary is kept only when its numbers appear in the email,
+      and a deadline only when its wording can be quoted from it. Anything else is dropped, never guessed, and nothing
+      merges into an existing record without the user.
+    </p>
+    <div class="table-wrap spaced grounding">
+      <table class="dt">
+        <caption><span class="caption__label">Table {table.grounding}.</span>What Extraction May Keep</caption>
+        <thead>
+          <tr>
+            <th scope="col">Field</th>
+            <th scope="col">Kept only when</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            groundingRules.map((row) => (
+              <tr>
+                <th scope="row">{row.field}</th>
+                <td>{row.rule}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <figure class="figure listing" id="listing-1">
+      <pre><code>{groundingListing.map((line) => (
+        <span class:list={['listing__line', { 'listing__comment': isComment(line) }]}>{line || ' '}</span>
+      ))}</code></pre>
+      <figcaption class="figure__caption">
+        <span class="caption__label">Listing 1.</span>From <code>services/recruitment/grounding.py</code>. Long lines
+        wrap with a hanging indent.
+      </figcaption>
+    </figure>
+
+    <SectionHeading level={4} number="6.3.3" title="Untrusted email, a model with no tools" id="untrusted-email" />
+    <p class="prose">
+      Every email is written by a stranger, so the model reads it as data. The email is delimited, any email tag inside
+      it is neutralised, and Specify's own signals sit outside the block. The model cannot act: it returns a
+      classification validated against a Pydantic schema, and anything unusable goes to the review queue.
+    </p>
+    <figure class="figure listing" id="listing-2">
+      <pre><code>{promptListing.map((line) => <span class="listing__line">{line}</span>)}</code></pre>
+      <figcaption class="figure__caption">
+        <span class="caption__label">Listing 2.</span>The end of the classifier's system prompt, from
+        <code>services/classification/ai.py</code>.
+      </figcaption>
+    </figure>
+  </div>
+
+  <PageBreak after={firstPage + 1} />
+
+  <div class="page sheet">
+    <SectionHeading level={4} number="6.3.4" title="One user, one user's data" id="isolation" />
+    <p class="prose">
+      Isolation does not rely on every query remembering its filter. With the restricted role configured, signed-in
+      requests connect as <code>specify_app</code>, and row-level policies show it only the current user's rows; workers
+      and sign-in keep the owner role because they act for the system. The policy script is re-applied on every start,
+      and a test fails when a new table has no policy.
+    </p>
+    <div class="table-wrap spaced">
+      <table class="dt dt--stack">
+        <caption><span class="caption__label">Table {table.isolation}.</span>Layers of Isolation</caption>
+        <thead>
+          <tr>
+            <th scope="col">Layer</th>
+            <th scope="col">How it holds</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            isolationLayers.map((row) => (
+              <tr>
+                <th scope="row">{row.layer}</th>
+                <td data-label="How">{row.how}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <SectionHeading level={4} number="6.3.5" title="Workflows that survive a restart" id="workflows" />
+    <div class="prose">
+      <p>
+        Workflows are graphs of 21 step types, from Gmail triggers and AI classification to approvals, waits and
+        retries. Each run has an idempotency key, saves its state after every step and keeps a step-by-step history.
+        Failed steps retry with exponential backoff, and a failed run stays for a manual retry.
+      </p>
+      <p>
+        The default workflow pauses for the user's decision, then resumes from the saved step to draft the reply. The
+        builder refuses a graph with more than one trigger, a loop or a step nothing reaches.
+      </p>
+    </div>
+
+    <SectionHeading level={3} number="6.4" title="Device Functional Modes" id="modes" />
+    <p class="prose">
+      The same build runs three ways, chosen with <code>AI_PROVIDER</code>. Whichever it is, the model only returns a
+      classification or extracted details; it cannot send, delete or change anything.
+    </p>
+    <div class="table-wrap spaced">
+      <table class="dt dt--stack">
+        <caption><span class="caption__label">Table {table.modes}.</span>Functional Modes</caption>
+        <thead>
+          <tr>
+            <th scope="col">Mode</th>
+            <th scope="col"><code>AI_PROVIDER</code></th>
+            <th scope="col">Email text goes</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            functionalModes.map((row) => (
+              <tr>
+                <th scope="row">{row.label}</th>
+                <td class="mono" data-label="Setting">{row.mode}</td>
+                <td data-label="Text goes">{row.where}</td>
+                <td data-label="Notes">{row.notes}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <PageBreak after={firstPage + 2} />
+
+  <div class="page sheet">
+    <SectionHeading level={3} number="6.5" title="Layout" id="layout" />
+    <figure class="figure listing" id={`figure-${figure.layout}`}>
+      <pre><code><span class="listing__line">Specify/</span>{repositoryLayout.map((entry, index) => (
+        <span class="listing__line">{index === repositoryLayout.length - 1 ? '└── ' : '├── '}{entry.path.padEnd(pathWidth)}<span class="listing__comment">{entry.note}</span></span>
+      ))}</code></pre>
+      <figcaption class="figure__caption">
+        <span class="caption__label">Figure {figure.layout}.</span>Repository layout. Design decisions and their reasons
+        are in <code>docs/ARCHITECTURE.md</code>.
+      </figcaption>
+    </figure>
+
+    <SectionHeading level={3} number="6.6" title="Errata" id="errata" />
+    <div class="table-wrap errata">
+      <table class="dt">
+        <caption><span class="caption__label">Table {table.errata}.</span>Known Limitations</caption>
+        <thead>
+          <tr>
+            <th scope="col">Issue</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            errata.map((row) => (
+              <tr>
+                <th scope="row">{row.issue}</th>
+                <td>{row.status}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <SectionHeading level={3} number="6.7" title="Other Applications" id="other-applications" />
+    <p class="prose">
+      Two earlier public projects, each with its own tests and row-level security, counted at the commits shown.
+    </p>
+    <div class="table-wrap spaced">
+      <table class="dt dt--stack">
+        <caption><span class="caption__label">Table {table.otherApplications}.</span>Other Applications</caption>
+        <thead>
+          <tr>
+            <th scope="col">Application</th>
+            <th scope="col">What it is</th>
+            <th scope="col">Measured</th>
+            <th scope="col">Built with</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            others.map((project) => (
+              <tr>
+                <th scope="row">
+                  {project.name}
+                  <span class="other__dates">{project.dates}</span>
+                </th>
+                <td data-label="What">{project.tagline}</td>
+                <td data-label="Measured">
+                  {project.results
+                    .slice(0, 3)
+                    .map((result) => `${result.value} ${result.label}`)
+                    .join('; ')}
+                  {' '}at <span class="mono">{project.commit}</span>
+                </td>
+                <td data-label="Built with">{project.stack.slice(0, 5).join(', ')}</td>
+                <td data-label="Source">
+                  <ul class="other__links">
+                    <li>
+                      <a href={project.source.href} target="_blank" rel="noopener">
+                        {project.source.label.replace('github.com/', '')}
+                        <Icon name="external" />
+                        <span class="visually-hidden">(opens in a new tab)</span>
+                      </a>
+                    </li>
+                    {project.live && (
+                      <li>
+                        <a href={project.live.href} target="_blank" rel="noopener">
+                          {project.live.label}
+                          <Icon name="external" />
+                          <span class="visually-hidden">(opens in a new tab)</span>
+                        </a>
+                      </li>
+                    )}
+                  </ul>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-5) var(--space-8);
+    align-items: start;
+  }
+
+  .lead {
+    max-width: 52ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .facts {
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    font-size: var(--step--1);
+  }
+
+  .facts > div {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+  }
+
+  .facts > div + div {
+    border-top: var(--line);
+  }
+
+  .facts dt {
+    padding-top: 0.1em;
+    font-size: var(--step--2);
+    font-stretch: var(--stretch-condensed);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .facts dd {
+    font-weight: 550;
+  }
+
+  .facts a,
+  .other__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .facts :global(svg),
+  .other__links :global(svg) {
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  .spaced {
+    margin-top: var(--space-5);
+  }
+
+  .grounding,
+  .errata {
+    max-width: 52rem;
+  }
+
+  .listing {
+    max-width: 52rem;
+    margin-top: var(--space-5);
+  }
+
+  .listing pre {
+    margin: 0;
+    padding: var(--space-4);
+    border-top: 2px solid var(--ink);
+    border-bottom: var(--line);
+    background: var(--paper-inset);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    line-height: 1.7;
+  }
+
+  .listing code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+    overflow-wrap: normal;
+  }
+
+  /* Wrapped lines hang two characters in, so a continuation never reads as a new line. */
+  .listing__line {
+    display: block;
+    padding-left: 2ch;
+    text-indent: -2ch;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .listing__comment {
+    color: var(--ink-3);
+  }
+
+  .lifecycle .num {
+    width: 3.5rem;
+  }
+
+  .other__dates {
+    display: block;
+    font-size: var(--step--2);
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  .other__links {
+    display: grid;
+    gap: var(--space-1);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Set on the link itself: the base rule's text-wrap on list items resets inherited nowrap. */
+  .other__links a {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 60rem) {
+    .intro {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+import RunningHead from '../components/RunningHead.astro';
+import Schematic from '../components/Schematic.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Value from '../../components/Value.astro';
+import { doc, sections, table } from '../data/document';
+import { profile } from '../../data/profile';
+import { features } from '../data/features';
+
+/**
+ * Page 1: who this is, three columns of what they offer (features, applications,
+ * description), then the simplified diagram of their latest build at the fold.
+ */
+const { availability } = profile;
+---
+
+<section class="page-one sheet" id="top" aria-labelledby="name">
+  <RunningHead />
+
+  <div class="title-block">
+    <h1 class="title-block__name" id="name"><Value field={profile.name} /></h1>
+    <p class="title-block__headline">{profile.headline}</p>
+
+    <dl class="part-box">
+      <div>
+        <dt>Part number</dt>
+        <dd class="mono">{doc.partNumber}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd><span class="flag flag--active">Available</span></dd>
+      </div>
+      <div>
+        <dt>Internship from</dt>
+        <dd><Value field={availability.internshipFrom} /></dd>
+      </div>
+      <div>
+        <dt>Graduating</dt>
+        <dd><Value field={profile.expectedGraduation} /></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="page-one__columns">
+    <section aria-labelledby={sections.features.id}>
+      <SectionHeading section={sections.features} />
+      <ul class="bullets">
+        {
+          features.map((feature) => (
+            <li>
+              {feature.text}{' '}
+              <span class="ref">
+                (see <a href={feature.ref.href}>{feature.ref.label}</a>)
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby={sections.applications.id}>
+      <SectionHeading section={sections.applications} />
+      <ul class="bullets">
+        {profile.roles.map((role) => <li>{role}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby={sections.description.id}>
+      <SectionHeading section={sections.description} />
+      <p class="prose">{profile.summary}</p>
+      <div class="table-wrap device-info">
+        <table class="dt dt--kv">
+          <caption>
+            <span class="caption__label">Table {table.device}.</span>Device Information<sup class="fn">(1)</sup>
+          </caption>
+          <tbody>
+            <tr>
+              <th scope="row">Programme</th>
+              <td>{profile.programme}</td>
+            </tr>
+            <tr>
+              <th scope="row">Institution</th>
+              <td><Value field={profile.institution} /></td>
+            </tr>
+            <tr>
+              <th scope="row">Based in</th>
+              <td><Value field={profile.location} /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ol class="footnotes">
+        <li>
+          (1) Start dates and working conditions are in <a href="#operating-conditions">Section 5.1</a>.
+        </li>
+      </ol>
+    </section>
+  </div>
+
+  <Schematic />
+</section>
+
+<style>
+  .page-one {
+    padding-bottom: var(--space-8);
+  }
+
+  .title-block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
+    grid-template-areas:
+      'name part'
+      'headline part';
+    align-items: end;
+    gap: var(--space-4) var(--space-8);
+    padding-block: var(--space-5) var(--space-6);
+  }
+
+  .title-block__name {
+    grid-area: name;
+    font-size: var(--step-display);
+    font-weight: 800;
+    font-stretch: var(--stretch-expanded);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+
+  .title-block__name :global(.tbd) {
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.12em;
+  }
+
+  .title-block__headline {
+    grid-area: headline;
+    max-width: 44ch;
+    font-size: var(--step-title);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .part-box {
+    grid-area: part;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    font-size: var(--step--1);
+  }
+
+  .part-box > div {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 2.5rem;
+    padding-block: var(--space-1);
+  }
+
+  .part-box > div + div {
+    border-top: var(--line);
+  }
+
+  .part-box dt {
+    font-size: var(--step--2);
+    font-stretch: var(--stretch-condensed);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .part-box dd {
+    font-weight: 600;
+  }
+
+  .page-one__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
+    gap: var(--space-7) var(--space-7);
+    margin-bottom: var(--space-6);
+  }
+
+  .page-one__columns .bullets {
+    gap: var(--space-3);
+  }
+
+  .device-info {
+    margin-top: var(--space-4);
+  }
+
+  .ref {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 64rem) {
+    .page-one__columns {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .page-one__columns > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 60rem) {
+    .title-block {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'name'
+        'headline'
+        'part';
+    }
+
+    .part-box {
+      margin-top: var(--space-3);
+    }
+
+    .page-one__columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,68 @@
+/*
+ * Design tokens. The world is a component datasheet: white paper, black ink, one
+ * manufacturer red, and an instrument grey for drawing lines. Light only: datasheets
+ * are printed paper, and the page is read in daylight offices.
+ */
+:root {
+  color-scheme: light;
+
+  /* Paper and ink */
+  --paper: #fbfbfa;
+  --paper-sunk: #efefed; /* table heads, the gap between pages */
+  --paper-inset: #f4f4f2; /* code listings, the device field in block diagrams */
+  --screen: #0b0b0d; /* behind screenshots of dark-themed apps */
+  --ink: #151515;
+  --ink-2: #45474a; /* secondary text, 9:1 on paper */
+  --ink-3: #626569; /* captions and footnotes, 5.6:1 on paper */
+  --rule: #d4d5d2; /* hairlines */
+  --instrument: #8a8f94; /* drawing lines and de-emphasised marks, never text */
+
+  /* The manufacturer red */
+  --red: #c8102e; /* 5.6:1 on paper */
+  --red-deep: #9e0c24;
+  --red-wash: #f8e3e6;
+
+  /* Text on ink, as in the chart readout */
+  --on-ink-muted: #c9cacc; /* 11:1 on ink */
+
+  /* Status: ships with a label, never colour alone */
+  --status-active: #1d7a43;
+
+  /* Type */
+  --font-sans: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Fragment Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --step--2: 0.8125rem; /* running heads, table heads, footnotes */
+  --step--1: 0.875rem; /* tables, captions */
+  --step-0: 1rem; /* body */
+  --step-1: 1.1875rem; /* subsection headings */
+  --step-2: 1.5rem; /* section headings */
+  --step-title: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+  --step-display: clamp(2.75rem, 1.35rem + 5.6vw, 6rem);
+
+  /* Widths on Archivo's width axis */
+  --stretch-condensed: 87.5%;
+  --stretch-normal: 100%;
+  --stretch-expanded: 118%;
+
+  /* Space: one rhythm for the whole sheet */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --gutter: clamp(1rem, 3.6vw, 2.5rem);
+  --sheet-width: 75rem;
+  --measure: 68ch;
+  --bar-height: 3.5rem;
+
+  --line: 1px solid var(--rule);
+  --line-ink: 1.5px solid var(--ink);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

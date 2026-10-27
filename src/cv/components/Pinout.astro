@@ -1,0 +1,471 @@
+---
+import { doc, figure, table } from '../data/document';
+import { skills as pins, skillTypes as pinTypes } from '../../data/skills';
+import Icon from '../../components/Icon.astro';
+
+/**
+ * Figure 2 and Table 2: the skills as a 16-pin DIP package and its pin-function table.
+ * Pointing at a pin traces it in red and lights its row, and the other way round.
+ */
+const BODY = { x: 150, y: 56, width: 160, height: 450 };
+const PITCH = 54;
+const FIRST_PIN_Y = BODY.y + 36;
+const PER_SIDE = pins.length / 2;
+const LEAD = 26;
+const LEADER = 26;
+const centerX = BODY.x + BODY.width / 2;
+const centerY = BODY.y + BODY.height / 2;
+const bodyRight = BODY.x + BODY.width;
+
+const placed = pins.map((pin, index) => {
+  const left = index < PER_SIDE;
+  // Pins run down the left side, then back up the right, as on a real DIP.
+  const row = left ? index : pins.length - 1 - index;
+  return { ...pin, number: index + 1, left, y: FIRST_PIN_Y + row * PITCH };
+});
+
+const bodyPath = [
+  `M${BODY.x} ${BODY.y}`,
+  `H${centerX - 18}`,
+  `A18 18 0 0 0 ${centerX + 18} ${BODY.y}`,
+  `H${bodyRight}`,
+  `V${BODY.y + BODY.height}`,
+  `H${BODY.x}`,
+  'Z',
+].join(' ');
+
+const typeLegend = Object.entries(pinTypes)
+  .map(([code, meaning]) => `${code} = ${meaning}`)
+  .join(', ');
+---
+
+<div class="pinout" data-pinout>
+  <figure class="figure pinout__figure" id={`figure-${figure.pinout}`}>
+    <svg
+      class="pinout__drawing"
+      viewBox="0 0 460 560"
+      role="group"
+      aria-labelledby={`figure-${figure.pinout}-caption`}
+    >
+      <path class="pinout__body" d={bodyPath}></path>
+      <circle class="pinout__dot" cx={BODY.x + 22} cy={BODY.y + 20} r="4" aria-hidden="true"></circle>
+      <text
+        class="pinout__marking"
+        x={centerX}
+        y={centerY}
+        transform={`rotate(-90 ${centerX} ${centerY})`}
+        aria-hidden="true">{doc.partNumber}</text
+      >
+      {
+        placed.map((pin) => {
+          const leadX = pin.left ? BODY.x - LEAD : bodyRight;
+          const outerX = pin.left ? BODY.x - LEAD - LEADER : bodyRight + LEAD + LEADER;
+          const edgeX = pin.left ? BODY.x : bodyRight;
+          return (
+            <a
+              class="pin"
+              href={`#pin-${pin.number}`}
+              data-pin={pin.number}
+              data-side={pin.left ? 'left' : 'right'}
+              style={`--i: ${pin.number - 1}`}
+              aria-label={`Pin ${pin.number}, ${pin.pin}: ${pin.name}`}
+            >
+              <rect
+                class="pin__hit"
+                x={pin.left ? 30 : bodyRight - 2}
+                y={pin.y - 20}
+                width="122"
+                height="40"
+              />
+              <line class="pin__leader" x1={edgeX} y1={pin.y} x2={outerX} y2={pin.y} />
+              <line class="pin__trace" x1={edgeX} y1={pin.y} x2={outerX} y2={pin.y} />
+              <rect class="pin__lead" x={leadX} y={pin.y - 5} width={LEAD} height="10" />
+              <text
+                class="pin__number"
+                x={pin.left ? BODY.x + 12 : bodyRight - 12}
+                y={pin.y + 4}
+                text-anchor={pin.left ? 'start' : 'end'}
+              >
+                {pin.number}
+              </text>
+              <text
+                class="pin__name"
+                x={pin.left ? outerX - 6 : outerX + 6}
+                y={pin.y + 5}
+                text-anchor={pin.left ? 'end' : 'start'}
+              >
+                {pin.pin}
+              </text>
+            </a>
+          );
+        })
+      }
+      <text class="pinout__view" x={centerX} y={BODY.y + BODY.height + 36} aria-hidden="true">TOP VIEW</text>
+    </svg>
+    <figcaption class="figure__caption" id={`figure-${figure.pinout}-caption`}>
+      <span class="caption__label">Figure {figure.pinout}.</span>{doc.partNumber} 16-pin DIP, top view. Point at a
+      pin to find its row.
+    </figcaption>
+  </figure>
+
+  <div class="pinout__functions">
+    <div class="table-wrap">
+      <table class="dt dt--stack pin-table">
+        <caption><span class="caption__label">Table {table.pins}.</span>Pin Functions</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="num">No.</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type<sup class="fn">(1)</sup></th>
+            <th scope="col">Function</th>
+            <th scope="col">Proven in</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            placed.map((pin) => (
+              <tr id={`pin-${pin.number}`} data-pin-row={pin.number}>
+                <td class="num mono pin-table__no" data-label="No.">
+                  {pin.number}
+                </td>
+                <th scope="row" class="pin-table__name">
+                  {pin.pin}
+                </th>
+                <td class="mono pin-table__type" data-label="Type">
+                  {pin.type}
+                </td>
+                <td class="pin-table__function" data-label="Function">
+                  <span>
+                    <strong>{pin.name}.</strong> {pin.description}
+                  </span>
+                </td>
+                <td class="pin-table__proof" data-label="Proven in">
+                  <span class="pin-table__project">{pin.evidence.project}</span>
+                  <a href={pin.evidence.href} title={pin.evidence.path} target="_blank" rel="noopener">
+                    {pin.evidence.label}
+                    <Icon name="external" />
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <ol class="footnotes">
+      <li>(1) {typeLegend}.</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-pinout]')) {
+    const pins = [...root.querySelectorAll<SVGAElement>('[data-pin]')];
+    const rows = [...root.querySelectorAll<HTMLTableRowElement>('[data-pin-row]')];
+
+    // Pointer and keyboard each hold a pin. The latest one to move wins; when it lets go,
+    // the other one's pin lights again.
+    let hovered: string | undefined;
+    let focused: string | undefined;
+    const light = (number: string | undefined) => {
+      for (const pin of pins) pin.classList.toggle('is-active', pin.dataset.pin === number);
+      for (const row of rows) row.classList.toggle('is-active', row.dataset.pinRow === number);
+    };
+
+    const bind = (element: HTMLElement | SVGElement, number: string | undefined) => {
+      element.addEventListener('pointerenter', () => {
+        hovered = number;
+        light(hovered);
+      });
+      element.addEventListener('pointerleave', () => {
+        if (hovered === number) hovered = undefined;
+        light(hovered ?? focused);
+      });
+      element.addEventListener('focusin', () => {
+        focused = number;
+        light(focused);
+      });
+      element.addEventListener('focusout', () => {
+        if (focused === number) focused = undefined;
+        light(focused ?? hovered);
+      });
+    };
+    for (const pin of pins) bind(pin, pin.dataset.pin);
+    for (const row of rows) bind(row, row.dataset.pinRow);
+
+    // The pins seat once, in order, the first time the package scrolls into view.
+    const drawing = root.querySelector('svg');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (drawing && !calm && drawing.getBoundingClientRect().top > window.innerHeight) {
+      root.classList.add('is-armed');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          root.classList.add('is-seated');
+          observer.disconnect();
+        },
+        { threshold: 0.3 },
+      );
+      observer.observe(drawing);
+    }
+  }
+</script>
+
+<style>
+  .pinout {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  .pinout__figure {
+    position: sticky;
+    top: calc(var(--bar-height) + var(--space-5));
+  }
+
+  .pinout__drawing {
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto;
+    overflow: visible;
+  }
+
+  .pinout__body {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+
+  .pinout__dot {
+    fill: var(--ink);
+  }
+
+  .pinout__marking {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 800;
+    font-stretch: var(--stretch-expanded);
+    letter-spacing: 0.14em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: var(--ink);
+  }
+
+  .pinout__view {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 650;
+    font-stretch: var(--stretch-condensed);
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    fill: var(--ink-3);
+  }
+
+  .pin {
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+  }
+
+  .pin__hit {
+    fill: transparent;
+    stroke: none;
+  }
+
+  .pin__leader {
+    stroke: var(--instrument);
+    stroke-width: 1;
+  }
+
+  .pin__trace {
+    stroke: var(--red);
+    stroke-width: 2.5;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    transition: stroke-dashoffset 320ms var(--ease-out);
+  }
+
+  .pin__lead {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    transition: fill 160ms var(--ease-out), stroke 160ms var(--ease-out);
+  }
+
+  .pin__number {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    fill: var(--ink-2);
+  }
+
+  .pin__name {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 650;
+    font-stretch: var(--stretch-condensed);
+    letter-spacing: 0.04em;
+    fill: var(--ink);
+    transition: fill 160ms var(--ease-out);
+  }
+
+  .pin.is-active .pin__trace,
+  .pin:focus-visible .pin__trace {
+    stroke-dashoffset: 0;
+  }
+
+  .pin.is-active .pin__lead,
+  .pin:focus-visible .pin__lead {
+    fill: var(--red);
+    stroke: var(--red);
+  }
+
+  .pin.is-active .pin__name,
+  .pin:focus-visible .pin__name,
+  .pin.is-active .pin__number {
+    fill: var(--red);
+  }
+
+  .pin:focus-visible .pin__hit {
+    stroke: var(--red);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 3;
+  }
+
+  /* Seating: only armed when the package starts below the fold and motion is welcome. */
+  .pinout.is-armed .pin {
+    opacity: 0;
+    translate: -14px 0;
+  }
+
+  .pinout.is-armed .pin[data-side='right'] {
+    translate: 14px 0;
+  }
+
+  .pinout.is-armed.is-seated .pin {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity 360ms var(--ease-out) calc(var(--i) * 45ms),
+      translate 520ms var(--ease-out) calc(var(--i) * 45ms);
+  }
+
+  .pin-table__no,
+  .pin-table__type {
+    color: var(--ink-2);
+  }
+
+  .pin-table__name {
+    font-stretch: var(--stretch-condensed);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* One line per pin, so all sixteen rows sit beside the package. */
+  .pin-table td,
+  .pin-table tbody th {
+    padding-block: var(--space-2);
+  }
+
+  .pin-table__proof {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  .pin-table__proof a {
+    color: var(--ink-2);
+  }
+
+  .pin-table__project {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    font-stretch: var(--stretch-condensed);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .pin-table__proof :global(svg) {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    margin-left: 0.2em;
+    vertical-align: -0.1em;
+  }
+
+  .pin-table tr {
+    transition: background-color 160ms var(--ease-out);
+  }
+
+  .pin-table tr.is-active > *,
+  .pin-table tr:target > * {
+    background: var(--red-wash);
+  }
+
+  .pin-table tr.is-active .pin-table__no,
+  .pin-table tr:target .pin-table__no,
+  .pin-table tr.is-active .pin-table__name {
+    color: var(--red);
+  }
+
+  /* Phones: each pin is three short lines, number, name and type first. */
+  @media (max-width: 40rem) {
+    .pin-table tbody tr {
+      display: grid;
+      grid-template-columns: 2rem minmax(0, 1fr) auto;
+      grid-template-areas:
+        'no name type'
+        'function function function'
+        'proof proof proof';
+      column-gap: var(--space-2);
+    }
+
+    .pin-table td[data-label] {
+      display: block;
+    }
+
+    .pin-table td[data-label]::before {
+      content: none;
+    }
+
+    .pin-table .pin-table__no {
+      grid-area: no;
+    }
+
+    .pin-table .pin-table__name {
+      grid-area: name;
+    }
+
+    .pin-table .pin-table__type {
+      grid-area: type;
+    }
+
+    .pin-table .pin-table__function {
+      grid-area: function;
+    }
+
+    .pin-table .pin-table__proof {
+      grid-area: proof;
+    }
+  }
+
+  @media (max-width: 60rem) {
+    .pinout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+
+    .pinout__figure {
+      position: static;
+    }
+
+    .pinout__drawing {
+      max-width: 26rem;
+    }
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+/**
+ * The HTML shell both pages share: meta tags, social previews and structured data. Each world
+ * (src/web for the website, src/cv for the printed CV) wraps it with its own fonts and styles.
+ */
+interface Props {
+  title: string;
+  description: string;
+  /** The browser chrome colour, matching the page's ground. */
+  themeColor: string;
+  /** Structured data describing the page's subject. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, themeColor, jsonLd } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

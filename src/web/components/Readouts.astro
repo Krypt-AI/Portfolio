@@ -1,0 +1,161 @@
+---
+import type { Readout } from '../../data/projects';
+
+/**
+ * A poster's measured results. Each number opens to show its working: how, where and at
+ * which commit it was counted. Native <details>, so it works without script and by keyboard.
+ */
+interface Props {
+  results: Readout[];
+  commit: string;
+}
+
+const { results, commit } = Astro.props;
+---
+
+<ul class="readouts">
+  {
+    results.map((result) => (
+      <li>
+        <details class="readout">
+          <summary class="readout__summary">
+            <span class="readout__value">{result.value}</span>
+            <span class="readout__label">{result.label}</span>
+            <span class="readout__how" aria-hidden="true">
+              Show working
+            </span>
+          </summary>
+          <p class="readout__working">{result.working}</p>
+        </details>
+      </li>
+    ))
+  }
+</ul>
+<p class="readouts__commit">
+  Counted at commit <span class="mono">{commit}</span>. Open any number to see how it was counted.
+</p>
+
+<style>
+  .readouts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Cells in a row share one height, so the "Show working" toggles line up along the bottom. */
+  .readouts > li {
+    display: flex;
+    min-width: 0;
+  }
+
+  @container (max-width: 17rem) {
+    .readouts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .readout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    border-top: 3px solid var(--band);
+    background: var(--sheet-tint);
+  }
+
+  .readout__summary {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-4) var(--space-3);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .readout__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .readout__value {
+    font-family: var(--font-display);
+    /* Never wider than its cell: scales with the poster in narrow columns. */
+    font-size: clamp(1.75rem, 11cqi, var(--step-value));
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .readout__label {
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .readout__how {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.4em;
+    margin-top: auto;
+    padding-top: var(--space-2);
+    color: var(--ink-3);
+    font-size: var(--step--1);
+    text-decoration: underline;
+    text-decoration-color: var(--band);
+    text-underline-offset: 0.2em;
+  }
+
+  /* A plus that turns into a minus while the working is open. */
+  .readout__how::before {
+    content: '';
+    flex: none;
+    width: 0.65rem;
+    height: 0.65rem;
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat;
+    transition: background-size 200ms var(--ease-out);
+  }
+
+  .readout[open] .readout__how::before {
+    background-size: 100% 2px, 2px 0;
+  }
+
+  .readout__summary:hover .readout__how,
+  .readout[open] .readout__how {
+    color: var(--ink);
+  }
+
+  .readout__working {
+    padding: 0 var(--space-4) var(--space-4);
+    color: var(--ink-2);
+    font-size: var(--step--1);
+    line-height: 1.55;
+  }
+
+  .readout__summary:focus-visible {
+    outline-offset: -3px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .readout::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 280ms var(--ease-out),
+        content-visibility 280ms allow-discrete;
+    }
+
+    .readout[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  .readouts__commit {
+    margin-top: var(--space-3);
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+</style>

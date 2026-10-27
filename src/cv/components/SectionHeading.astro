@@ -1,0 +1,19 @@
+---
+import type { SectionRef } from '../data/document';
+
+/** A numbered datasheet heading, e.g. "6.3.1 Counter-aware lineup planner". */
+type Props = (
+  | { section: SectionRef }
+  | { number: string; title: string; id: string }
+) & { level?: 2 | 3 | 4 };
+
+const props = Astro.props;
+const { number, title, id } = 'section' in props ? props.section : props;
+const level = props.level ?? 2;
+const Tag = `h${level}` as 'h2' | 'h3' | 'h4';
+---
+
+<Tag id={id} class={`heading heading--${level}`}>
+  <span class="heading__num">{number}</span>
+  <span>{title}</span>
+</Tag>

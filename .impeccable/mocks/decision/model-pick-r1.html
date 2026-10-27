@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Poster session sketch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1440px; height: 900px; overflow: hidden; background: #d5d9df; font-family: "Segoe UI", Arial, sans-serif; color: #111418; }
+  .strip { display: flex; justify-content: space-between; align-items: center; background: #111418; color: #fff; padding: 26px 70px; }
+  .strip b { font-size: 44px; font-weight: 800; } .strip span { font-size: 24px; }
+  .actions { display: flex; gap: 12px; } .actions div { height: 56px; padding: 0 26px; display: grid; place-items: center; font-size: 22px; font-weight: 700; background: #fff; color: #111418; }
+  .actions div:first-child { background: #e63946; color: #fff; }
+  .wall { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; padding: 44px 70px; align-items: start; }
+  .poster { background: #fff; padding: 28px; position: relative; box-shadow: 0 2px 0 rgb(0 0 0 / 0.08); }
+  .poster::before { content: ""; position: absolute; top: -10px; left: 50%; width: 22px; height: 22px; border-radius: 50%; background: #e63946; }
+  .poster h2 { font-size: 46px; font-weight: 800; }
+  .poster:not(:first-child) h2 { font-size: 30px; }
+  .band { height: 46px; margin-top: 18px; display: flex; align-items: center; padding-left: 14px; color: #fff; font-size: 22px; font-weight: 700; background: #1d4ed8; }
+  .poster:nth-child(2) .band { background: #0f766e; } .poster:nth-child(3) .band { background: #e63946; }
+  .block { height: 90px; margin-top: 12px; background: #eef0f3; }
+  .poster:first-child .block { height: 130px; }
+</style>
+</head>
+<body>
+  <div class="strip"><div><b>Muhammad Alif Hakimi</b> <span>· Diploma in CS, UNITEN · Project exhibition 2026</span></div><div class="actions"><div>Email</div><div>CV</div></div></div>
+  <div class="wall">
+    <div class="poster"><h2>Specify</h2><div class="band">Problem</div><div class="block"></div><div class="band">Method</div><div class="block"></div><div class="band">Results</div></div>
+    <div class="poster"><h2>Study Hub</h2><div class="band">Problem</div><div class="block"></div><div class="band">Results</div><div class="block"></div></div>
+    <div class="poster"><h2>RWBY Afterlight</h2><div class="band">Problem</div><div class="block"></div><div class="band">Results</div><div class="block"></div></div>
+  </div>
+</body>
+</html>

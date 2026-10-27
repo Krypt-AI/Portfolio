@@ -1,0 +1,112 @@
+---
+import Icon from '../../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Value from '../../components/Value.astro';
+import { certificates } from '../../data/certificates';
+import { sections, table } from '../data/document';
+import { isPlaceholder, resolve } from '../../lib/placeholder';
+
+/** Section 7: courses and certificates, each linking to the issuer's verification page. */
+const showIssued = certificates.some((certificate) => certificate.issued !== undefined);
+const anyVerifiable = certificates.some((certificate) => certificate.verifyUrl !== undefined);
+---
+
+<section aria-labelledby={sections.certifications.id}>
+  <SectionHeading section={sections.certifications} />
+  {
+    certificates.length === 0 ? (
+      <p class="prose prose--secondary">No certifications listed yet.</p>
+    ) : (
+      <>
+        <div class="table-wrap">
+          <table class="dt dt--stack">
+            <caption>
+              <span class="caption__label">Table {table.certifications}.</span>Certifications
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Certificate</th>
+                <th scope="col">Issuer</th>
+                {showIssued && <th scope="col">Issued</th>}
+                <th scope="col">Credential</th>
+              </tr>
+            </thead>
+            <tbody>
+              {certificates.map((certificate) => (
+                <tr>
+                  <th scope="row">
+                    <Value field={certificate.name} />
+                  </th>
+                  <td data-label="Issuer">
+                    <Value field={certificate.issuer} />
+                  </td>
+                  {showIssued && (
+                    <td class="issued" data-label="Issued">
+                      {certificate.issued && <Value field={certificate.issued} />}
+                    </td>
+                  )}
+                  <td data-label="Credential">
+                    <div class="credential">
+                    {certificate.credentialId && (
+                      <span class="mono">
+                        <Value field={certificate.credentialId} />
+                      </span>
+                    )}
+                    {certificate.verifyUrl && (
+                      <a
+                        href={resolve(certificate.verifyUrl)}
+                        target="_blank"
+                        rel="noopener"
+                        class:list={{ tbd: isPlaceholder(certificate.verifyUrl) }}
+                      >
+                        Verify
+                        <Icon name="external" />
+                        <span class="visually-hidden">(opens in a new tab)</span>
+                      </a>
+                    )}
+                    {!certificate.credentialId && !certificate.verifyUrl && <span class="none">—</span>}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {anyVerifiable && (
+          <ol class="footnotes">
+            <li>Each Verify link opens the issuer's own record of the credential.</li>
+          </ol>
+        )}
+      </>
+    )
+  }
+</section>
+
+<style>
+  .issued {
+    white-space: nowrap;
+  }
+
+  .credential {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    align-items: baseline;
+  }
+
+  .credential a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-weight: 600;
+  }
+
+  .credential :global(svg) {
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  .none {
+    color: var(--ink-3);
+  }
+</style>
